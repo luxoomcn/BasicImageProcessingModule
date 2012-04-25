@@ -1,10 +1,4 @@
-// Image Processing filters demo
-// AForge.NET framework
-// http://www.aforgenet.com/framework/
-//
-// Copyright ?AForge.NET, 2006-2011
-// contacts@aforgenet.com
-//
+
 
 using System;
 using System.Drawing;
@@ -19,7 +13,7 @@ using AForge.Imaging;
 using AForge.Imaging.Filters;
 using AForge.Imaging.Textures;
 
-namespace FiltersDemo
+namespace ImageFilters
 {
     /// <summary>
     /// Summary description for MainForm.
@@ -77,6 +71,11 @@ namespace FiltersDemo
         private MenuItem menuItem9;
         private MenuItem BinaryDilatationFiltersItem;
         private MenuItem BinaryErosionFiltersItem;
+        private MenuItem testFilterItem;
+        private MenuItem menuItem10;
+        private MenuItem menuItem11;
+        private MenuItem menuItemErode;
+        private MenuItem menuItemDilate;
         private System.Drawing.Bitmap filteredImage;
 
         // Constructor
@@ -153,15 +152,20 @@ namespace FiltersDemo
             this.jitterFiltersItem = new System.Windows.Forms.MenuItem();
             this.oilFiltersItem = new System.Windows.Forms.MenuItem();
             this.textureFiltersItem = new System.Windows.Forms.MenuItem();
+            this.menuItem9 = new System.Windows.Forms.MenuItem();
+            this.BinaryDilatationFiltersItem = new System.Windows.Forms.MenuItem();
+            this.BinaryErosionFiltersItem = new System.Windows.Forms.MenuItem();
+            this.testFilterItem = new System.Windows.Forms.MenuItem();
+            this.menuItem10 = new System.Windows.Forms.MenuItem();
             this.sizeItem = new System.Windows.Forms.MenuItem();
             this.normalSizeItem = new System.Windows.Forms.MenuItem();
             this.stretchedSizeItem = new System.Windows.Forms.MenuItem();
             this.centeredSizeItem = new System.Windows.Forms.MenuItem();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.pictureBox = new System.Windows.Forms.PictureBox();
-            this.menuItem9 = new System.Windows.Forms.MenuItem();
-            this.BinaryDilatationFiltersItem = new System.Windows.Forms.MenuItem();
-            this.BinaryErosionFiltersItem = new System.Windows.Forms.MenuItem();
+            this.menuItem11 = new System.Windows.Forms.MenuItem();
+            this.menuItemErode = new System.Windows.Forms.MenuItem();
+            this.menuItemDilate = new System.Windows.Forms.MenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -170,7 +174,8 @@ namespace FiltersDemo
             this.mainMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.fileItem,
             this.filtersItem,
-            this.sizeItem});
+            this.sizeItem,
+            this.menuItem11});
             // 
             // fileItem
             // 
@@ -238,7 +243,9 @@ namespace FiltersDemo
             this.textureFiltersItem,
             this.menuItem9,
             this.BinaryDilatationFiltersItem,
-            this.BinaryErosionFiltersItem});
+            this.BinaryErosionFiltersItem,
+            this.testFilterItem,
+            this.menuItem10});
             this.filtersItem.Text = "Fi&lters";
             // 
             // noneFiltersItem
@@ -432,6 +439,35 @@ namespace FiltersDemo
             this.textureFiltersItem.Text = "Texture";
             this.textureFiltersItem.Click += new System.EventHandler(this.textureFiltersItem_Click);
             // 
+            // menuItem9
+            // 
+            this.menuItem9.Index = 33;
+            this.menuItem9.Text = "-";
+            // 
+            // BinaryDilatationFiltersItem
+            // 
+            this.BinaryDilatationFiltersItem.Index = 34;
+            this.BinaryDilatationFiltersItem.Text = "BinaryDilatation";
+            this.BinaryDilatationFiltersItem.Click += new System.EventHandler(this.BinaryDilatationFiltersItem_Click);
+            // 
+            // BinaryErosionFiltersItem
+            // 
+            this.BinaryErosionFiltersItem.Index = 35;
+            this.BinaryErosionFiltersItem.Text = "BinaryErosion";
+            this.BinaryErosionFiltersItem.Click += new System.EventHandler(this.BinaryErosionFiltersItem_Click);
+            // 
+            // testFilterItem
+            // 
+            this.testFilterItem.Index = 36;
+            this.testFilterItem.Text = "MosaicFilter";
+            this.testFilterItem.Click += new System.EventHandler(this.testFilterItem_Click);
+            // 
+            // menuItem10
+            // 
+            this.menuItem10.Index = 37;
+            this.menuItem10.Text = "GaussSmooth";
+            this.menuItem10.Click += new System.EventHandler(this.menuItem10_Click);
+            // 
             // sizeItem
             // 
             this.sizeItem.Index = 2;
@@ -480,22 +516,25 @@ namespace FiltersDemo
             this.pictureBox.TabIndex = 0;
             this.pictureBox.TabStop = false;
             // 
-            // menuItem9
+            // menuItem11
             // 
-            this.menuItem9.Index = 33;
-            this.menuItem9.Text = "-";
+            this.menuItem11.Index = 3;
+            this.menuItem11.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.menuItemErode,
+            this.menuItemDilate});
+            this.menuItem11.Text = "&Morphology";
             // 
-            // BinaryDilatationFiltersItem
+            // menuItemErode
             // 
-            this.BinaryDilatationFiltersItem.Index = 34;
-            this.BinaryDilatationFiltersItem.Text = "BinaryDilatation";
-            this.BinaryDilatationFiltersItem.Click += new System.EventHandler(this.BinaryDilatationFiltersItem_Click);
+            this.menuItemErode.Index = 0;
+            this.menuItemErode.Text = "Erode";
+            this.menuItemErode.Click += new System.EventHandler(this.menuItemErode_Click);
             // 
-            // BinaryErosionFiltersItem
+            // menuItemDilate
             // 
-            this.BinaryErosionFiltersItem.Index = 35;
-            this.BinaryErosionFiltersItem.Text = "BinaryErosion";
-            this.BinaryErosionFiltersItem.Click += new System.EventHandler(this.BinaryErosionFiltersItem_Click);
+            this.menuItemDilate.Index = 1;
+            this.menuItemDilate.Text = "Dilate";
+            this.menuItemDilate.Click += new System.EventHandler(this.menuItemDilate_Click);
             // 
             // MainForm
             // 
@@ -505,7 +544,7 @@ namespace FiltersDemo
             this.Menu = this.mainMenu;
             this.MinimumSize = new System.Drawing.Size(384, 258);
             this.Name = "MainForm";
-            this.Text = "Image Processing filters demo";
+            this.Text = "Image Processing filters ";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             this.ResumeLayout(false);
 
@@ -903,5 +942,426 @@ namespace FiltersDemo
             filter.ApplyInPlace(filteredImage);
             BinaryErosionFiltersItem.Checked = true;
         }
+
+        private void testFilterItem_Click(object sender, EventArgs e)
+        {
+            MosaicFilter mosaic = new MosaicFilter();
+            pictureBox.Image = mosaic.ProcessBitmap(sourceImage, 8);
+            testFilterItem.Checked = true; 
+
+        }
+
+        private void menuItem10_Click(object sender, EventArgs e)
+        {
+            // define mean filter kernel
+            int[,] kernel = {
+            { 1, 1, 1 },
+            { 1, 1, 1 },
+            { 1, 1, 1 } };
+            // create filter
+            Convolution filter = new Convolution(kernel);
+            // apply the filter
+            filter.ApplyInPlace(sourceImage);
+            menuItem10.Checked = true; 
+
+        }
+
+
+        private void menuItemErode_Click(object sender, EventArgs e)
+        {
+              struction struForm = new struction();
+              struForm.Text = "Erosion operation of structural elements";
+                if (struForm.ShowDialog() == DialogResult.OK)
+                {
+                    Rectangle rect = new Rectangle(0, 0, sourceImage.Width, sourceImage.Height);
+                    System.Drawing.Imaging.BitmapData bmpData = sourceImage.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadWrite, sourceImage.PixelFormat);
+                    IntPtr ptr = bmpData.Scan0;
+                    int bytes = sourceImage.Width * sourceImage.Height;
+                    byte[] grayValues = new byte[bytes];
+                    System.Runtime.InteropServices.Marshal.Copy(ptr, grayValues, 0, bytes);
+
+                    byte flagStru = struForm.GetStruction;
+
+                    byte[] tempArray = new byte[bytes];
+                    for (int i = 0; i < bytes; i++)
+                    {
+                        tempArray[i] = 255;
+                    }
+
+                    switch (flagStru)
+                    {
+                        case 0x11:
+                            for (int i = 0; i < sourceImage.Height; i++)
+                            {
+                                for (int j = 1; j < sourceImage.Width - 1; j++)
+                                {
+                                    if (grayValues[i * sourceImage.Width + j] == 0 &&
+                                        grayValues[i * sourceImage.Width + j + 1] == 0 &&
+                                        grayValues[i * sourceImage.Width + j - 1] == 0)
+                                    {
+                                        tempArray[i * sourceImage.Width + j] = 0;
+                                    }
+
+                                }
+                            }
+                            break;
+                        case 0x21:
+                            for (int i = 0; i < sourceImage.Height; i++)
+                            {
+                                for (int j = 2; j < sourceImage.Width - 2; j++)
+                                {
+                                    if (grayValues[i * sourceImage.Width + j] == 0 &&
+                                        grayValues[i * sourceImage.Width + j + 1] == 0 &&
+                                        grayValues[i * sourceImage.Width + j - 1] == 0 &&
+                                        grayValues[i * sourceImage.Width + j + 2] == 0 &&
+                                        grayValues[i * sourceImage.Width + j - 2] == 0)
+                                    {
+                                        tempArray[i * sourceImage.Width + j] = 0;
+                                    }
+
+                                }
+                            }
+                            break;
+                        case 0x12:
+                            for (int i = 1; i < sourceImage.Height - 1; i++)
+                            {
+                                for (int j = 0; j < sourceImage.Width; j++)
+                                {
+                                    if (grayValues[i * sourceImage.Width + j] == 0 &&
+                                        grayValues[(i - 1) * sourceImage.Width + j] == 0 &&
+                                        grayValues[(i + 1) * sourceImage.Width + j] == 0)
+                                    {
+                                        tempArray[i * sourceImage.Width + j] = 0;
+                                    }
+
+                                }
+                            }
+                            break;
+                        case 0x22:
+                            for (int i = 2; i < sourceImage.Height - 2; i++)
+                            {
+                                for (int j = 0; j < sourceImage.Width; j++)
+                                {
+                                    if (grayValues[i * sourceImage.Width + j] == 0 &&
+                                        grayValues[(i - 1) * sourceImage.Width + j] == 0 &&
+                                        grayValues[(i + 1) * sourceImage.Width + j] == 0 &&
+                                        grayValues[(i - 2) * sourceImage.Width + j] == 0 &&
+                                        grayValues[(i + 2) * sourceImage.Width + j] == 0)
+                                    {
+                                        tempArray[i * sourceImage.Width + j] = 0;
+                                    }
+
+                                }
+                            }
+                            break;
+                        case 0x14:
+                            for (int i = 1; i < sourceImage.Height - 1; i++)
+                            {
+                                for (int j = 1; j < sourceImage.Width - 1; j++)
+                                {
+                                    if (grayValues[i * sourceImage.Width + j] == 0 &&
+                                        grayValues[(i - 1) * sourceImage.Width + j] == 0 &&
+                                        grayValues[(i + 1) * sourceImage.Width + j] == 0 &&
+                                        grayValues[i * sourceImage.Width + j + 1] == 0 &&
+                                        grayValues[i * sourceImage.Width + j - 1] == 0)
+                                    {
+                                        tempArray[i * sourceImage.Width + j] = 0;
+                                    }
+
+                                }
+                            }
+                            break;
+                        case 0x24:
+                            for (int i = 2; i < sourceImage.Height - 2; i++)
+                            {
+                                for (int j = 2; j < sourceImage.Width - 2; j++)
+                                {
+                                    if (grayValues[i * sourceImage.Width + j] == 0 &&
+                                        grayValues[(i - 1) * sourceImage.Width + j] == 0 &&
+                                        grayValues[(i + 1) * sourceImage.Width + j] == 0 &&
+                                        grayValues[(i - 2) * sourceImage.Width + j] == 0 &&
+                                        grayValues[(i + 2) * sourceImage.Width + j] == 0 &&
+                                        grayValues[i * sourceImage.Width + j + 1] == 0 &&
+                                        grayValues[i * sourceImage.Width + j - 1] == 0 &&
+                                        grayValues[i * sourceImage.Width + j + 2] == 0 &&
+                                        grayValues[i * sourceImage.Width + j - 2] == 0)
+                                    {
+                                        tempArray[i * sourceImage.Width + j] = 0;
+                                    }
+
+                                }
+                            }
+                            break;
+                        case 0x18:
+                            for (int i = 1; i < sourceImage.Height - 1; i++)
+                            {
+                                for (int j = 1; j < sourceImage.Width - 1; j++)
+                                {
+                                    if (grayValues[i * sourceImage.Width + j] == 0 &&
+                                        grayValues[(i - 1) * sourceImage.Width + j] == 0 &&
+                                        grayValues[(i + 1) * sourceImage.Width + j] == 0 &&
+                                        grayValues[i * sourceImage.Width + j + 1] == 0 &&
+                                        grayValues[i * sourceImage.Width + j - 1] == 0 &&
+                                        grayValues[(i - 1) * sourceImage.Width + j - 1] == 0 &&
+                                        grayValues[(i + 1) * sourceImage.Width + j - 1] == 0 &&
+                                        grayValues[(i - 1) * sourceImage.Width + j + 1] == 0 &&
+                                        grayValues[(i + 1) * sourceImage.Width + j + 1] == 0)
+                                    {
+                                        tempArray[i * sourceImage.Width + j] = 0;
+                                    }
+
+                                }
+                            }
+                            break;
+                        case 0x28:
+                            for (int i = 2; i < sourceImage.Height - 2; i++)
+                            {
+                                for (int j = 2; j < sourceImage.Width - 2; j++)
+                                {
+                                    if (grayValues[(i - 2) * sourceImage.Width + j - 2] == 0 &&
+                                        grayValues[(i - 2) * sourceImage.Width + j - 1] == 0 &&
+                                        grayValues[(i - 2) * sourceImage.Width + j] == 0 &&
+                                        grayValues[(i - 2) * sourceImage.Width + j + 1] == 0 &&
+                                        grayValues[(i - 2) * sourceImage.Width + j + 2] == 0 &&
+                                        grayValues[(i - 1) * sourceImage.Width + j - 2] == 0 &&
+                                        grayValues[(i - 1) * sourceImage.Width + j - 1] == 0 &&
+                                        grayValues[(i - 1) * sourceImage.Width + j] == 0 &&
+                                        grayValues[(i - 1) * sourceImage.Width + j + 1] == 0 &&
+                                        grayValues[(i - 1) * sourceImage.Width + j + 2] == 0 &&
+                                        grayValues[i * sourceImage.Width + j - 2] == 0 &&
+                                        grayValues[i * sourceImage.Width + j - 1] == 0 &&
+                                        grayValues[i * sourceImage.Width + j] == 0 &&
+                                        grayValues[i * sourceImage.Width + j + 1] == 0 &&
+                                        grayValues[i * sourceImage.Width + j + 2] == 0 &&
+                                        grayValues[(i + 2) * sourceImage.Width + j - 2] == 0 &&
+                                        grayValues[(i + 2) * sourceImage.Width + j - 1] == 0 &&
+                                        grayValues[(i + 2) * sourceImage.Width + j] == 0 &&
+                                        grayValues[(i + 2) * sourceImage.Width + j + 1] == 0 &&
+                                        grayValues[(i + 2) * sourceImage.Width + j + 2] == 0 &&
+                                        grayValues[(i + 1) * sourceImage.Width + j - 2] == 0 &&
+                                        grayValues[(i + 1) * sourceImage.Width + j - 1] == 0 &&
+                                        grayValues[(i + 1) * sourceImage.Width + j] == 0 &&
+                                        grayValues[(i + 1) * sourceImage.Width + j + 1] == 0 &&
+                                        grayValues[(i + 1) * sourceImage.Width + j + 2] == 0)
+                                    {
+                                        tempArray[i * sourceImage.Width + j] = 0;
+                                    }
+
+                                }
+                            }
+                            break;
+                        default:
+                            MessageBox.Show("Erro Erodition Element£¡");
+                            break;
+                    }
+                    grayValues = (byte[])tempArray.Clone();
+
+                    System.Runtime.InteropServices.Marshal.Copy(grayValues, 0, ptr, bytes);
+                    sourceImage.UnlockBits(bmpData);
+                    pictureBox.Image = sourceImage;
+                }
+               
+                sourceImage.Dispose();
+                menuItemErode.Checked = true;
+        }
+
+        private void menuItemDilate_Click(object sender, EventArgs e)
+        {
+              struction struForm = new struction();
+                struForm.Text = "Dilation operation structual element";
+                if (struForm.ShowDialog() == DialogResult.OK)
+                {
+                    Rectangle rect = new Rectangle(0, 0, sourceImage.Width, sourceImage.Height);
+                    System.Drawing.Imaging.BitmapData bmpData = sourceImage.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadWrite, sourceImage.PixelFormat);
+                    IntPtr ptr = bmpData.Scan0;
+                    int bytes = sourceImage.Width * sourceImage.Height;
+                    byte[] grayValues = new byte[bytes];
+                    System.Runtime.InteropServices.Marshal.Copy(ptr, grayValues, 0, bytes);
+
+                    byte flagStru = struForm.GetStruction;
+
+                    byte[] tempArray = new byte[bytes];
+                    for (int i = 0; i < bytes; i++)
+                    {
+                        tempArray[i] = 255;
+                    }
+
+                    switch (flagStru)
+                    {
+                        case 0x11:
+                            for (int i = 0; i < sourceImage.Height; i++)
+                            {
+                                for (int j = 1; j < sourceImage.Width - 1; j++)
+                                {
+                                    if (grayValues[i * sourceImage.Width + j] == 0 ||
+                                        grayValues[i * sourceImage.Width + j + 1] == 0 ||
+                                        grayValues[i * sourceImage.Width + j - 1] == 0)
+                                    {
+                                        tempArray[i * sourceImage.Width + j] = 0;
+                                    }
+
+                                }
+                            }
+                            break;
+                        case 0x21:
+                            for (int i = 0; i < sourceImage.Height; i++)
+                            {
+                                for (int j = 2; j < sourceImage.Width - 2; j++)
+                                {
+                                    if (grayValues[i * sourceImage.Width + j] == 0 ||
+                                        grayValues[i * sourceImage.Width + j + 1] == 0 ||
+                                        grayValues[i * sourceImage.Width + j - 1] == 0 ||
+                                        grayValues[i * sourceImage.Width + j + 2] == 0 ||
+                                        grayValues[i * sourceImage.Width + j - 2] == 0)
+                                    {
+                                        tempArray[i * sourceImage.Width + j] = 0;
+                                    }
+
+                                }
+                            }
+                            break;
+                        case 0x12:
+                            for (int i = 1; i < sourceImage.Height - 1; i++)
+                            {
+                                for (int j = 0; j < sourceImage.Width; j++)
+                                {
+                                    if (grayValues[i * sourceImage.Width + j] == 0 ||
+                                        grayValues[(i - 1) * sourceImage.Width + j] == 0 ||
+                                        grayValues[(i + 1) * sourceImage.Width + j] == 0)
+                                    {
+                                        tempArray[i * sourceImage.Width + j] = 0;
+                                    }
+
+                                }
+                            }
+                            break;
+                        case 0x22:
+                            for (int i = 2; i < sourceImage.Height - 2; i++)
+                            {
+                                for (int j = 0; j < sourceImage.Width; j++)
+                                {
+                                    if (grayValues[i * sourceImage.Width + j] == 0 ||
+                                        grayValues[(i - 1) * sourceImage.Width + j] == 0 ||
+                                        grayValues[(i + 1) * sourceImage.Width + j] == 0 ||
+                                        grayValues[(i - 2) * sourceImage.Width + j] == 0 ||
+                                        grayValues[(i + 2) * sourceImage.Width + j] == 0)
+                                    {
+                                        tempArray[i * sourceImage.Width + j] = 0;
+                                    }
+
+                                }
+                            }
+                            break;
+                        case 0x14:
+                            for (int i = 1; i < sourceImage.Height - 1; i++)
+                            {
+                                for (int j = 1; j < sourceImage.Width - 1; j++)
+                                {
+                                    if (grayValues[i * sourceImage.Width + j] == 0 ||
+                                        grayValues[(i - 1) * sourceImage.Width + j] == 0 ||
+                                        grayValues[(i + 1) * sourceImage.Width + j] == 0 ||
+                                        grayValues[i * sourceImage.Width + j + 1] == 0 ||
+                                        grayValues[i * sourceImage.Width + j - 1] == 0)
+                                    {
+                                        tempArray[i * sourceImage.Width + j] = 0;
+                                    }
+
+                                }
+                            }
+                            break;
+                        case 0x24:
+                            for (int i = 2; i < sourceImage.Height - 2; i++)
+                            {
+                                for (int j = 2; j < sourceImage.Width - 2; j++)
+                                {
+                                    if (grayValues[i * sourceImage.Width + j] == 0 ||
+                                        grayValues[(i - 1) * sourceImage.Width + j] == 0 ||
+                                        grayValues[(i + 1) * sourceImage.Width + j] == 0 ||
+                                        grayValues[(i - 2) * sourceImage.Width + j] == 0 ||
+                                        grayValues[(i + 2) * sourceImage.Width + j] == 0 ||
+                                        grayValues[i * sourceImage.Width + j + 1] == 0 ||
+                                        grayValues[i * sourceImage.Width + j - 1] == 0 ||
+                                        grayValues[i * sourceImage.Width + j + 2] == 0 ||
+                                        grayValues[i * sourceImage.Width + j - 2] == 0)
+                                    {
+                                        tempArray[i * sourceImage.Width + j] = 0;
+                                    }
+
+                                }
+                            }
+                            break;
+                        case 0x18:
+                            for (int i = 1; i < sourceImage.Height - 1; i++)
+                            {
+                                for (int j = 1; j < sourceImage.Width - 1; j++)
+                                {
+                                    if (grayValues[i * sourceImage.Width + j] == 0 ||
+                                        grayValues[(i - 1) * sourceImage.Width + j] == 0 ||
+                                        grayValues[(i + 1) * sourceImage.Width + j] == 0 ||
+                                        grayValues[i * sourceImage.Width + j + 1] == 0 ||
+                                        grayValues[i * sourceImage.Width + j - 1] == 0 ||
+                                        grayValues[(i - 1) * sourceImage.Width + j - 1] == 0 ||
+                                        grayValues[(i + 1) * sourceImage.Width + j - 1] == 0 ||
+                                        grayValues[(i - 1) * sourceImage.Width + j + 1] == 0 ||
+                                        grayValues[(i + 1) * sourceImage.Width + j + 1] == 0)
+                                    {
+                                        tempArray[i * sourceImage.Width + j] = 0;
+                                    }
+
+                                }
+                            }
+                            break;
+                        case 0x28:
+                            for (int i = 2; i < sourceImage.Height - 2; i++)
+                            {
+                                for (int j = 2; j < sourceImage.Width - 2; j++)
+                                {
+                                    if (grayValues[(i - 2) * sourceImage.Width + j - 2] == 0 ||
+                                        grayValues[(i - 2) * sourceImage.Width + j - 1] == 0 ||
+                                        grayValues[(i - 2) * sourceImage.Width + j] == 0 ||
+                                        grayValues[(i - 2) * sourceImage.Width + j + 1] == 0 ||
+                                        grayValues[(i - 2) * sourceImage.Width + j + 2] == 0 ||
+                                        grayValues[(i - 1) * sourceImage.Width + j - 2] == 0 ||
+                                        grayValues[(i - 1) * sourceImage.Width + j - 1] == 0 ||
+                                        grayValues[(i - 1) * sourceImage.Width + j] == 0 ||
+                                        grayValues[(i - 1) * sourceImage.Width + j + 1] == 0 ||
+                                        grayValues[(i - 1) * sourceImage.Width + j + 2] == 0 ||
+                                        grayValues[i * sourceImage.Width + j - 2] == 0 ||
+                                        grayValues[i * sourceImage.Width + j - 1] == 0 ||
+                                        grayValues[i * sourceImage.Width + j] == 0 ||
+                                        grayValues[i * sourceImage.Width + j + 1] == 0 ||
+                                        grayValues[i * sourceImage.Width + j + 2] == 0 ||
+                                        grayValues[(i + 2) * sourceImage.Width + j - 2] == 0 ||
+                                        grayValues[(i + 2) * sourceImage.Width + j - 1] == 0 ||
+                                        grayValues[(i + 2) * sourceImage.Width + j] == 0 ||
+                                        grayValues[(i + 2) * sourceImage.Width + j + 1] == 0 ||
+                                        grayValues[(i + 2) * sourceImage.Width + j + 2] == 0 ||
+                                        grayValues[(i + 1) * sourceImage.Width + j - 2] == 0 ||
+                                        grayValues[(i + 1) * sourceImage.Width + j - 1] == 0 ||
+                                        grayValues[(i + 1) * sourceImage.Width + j] == 0 ||
+                                        grayValues[(i + 1) * sourceImage.Width + j + 1] == 0 ||
+                                        grayValues[(i + 1) * sourceImage.Width + j + 2] == 0)
+                                    {
+                                        tempArray[i * sourceImage.Width + j] = 0;
+                                    }
+
+                                }
+                            }
+                            break;
+                        default:
+                            MessageBox.Show("Erro struct element£¡");
+                            break;
+                    }
+
+
+                    grayValues = (byte[])tempArray.Clone();
+
+                    System.Runtime.InteropServices.Marshal.Copy(grayValues, 0, ptr, bytes);
+                    sourceImage.UnlockBits(bmpData);
+                }
+                sourceImage.Dispose();
+                menuItemDilate.Checked = true;
+        }
+
     }
 }

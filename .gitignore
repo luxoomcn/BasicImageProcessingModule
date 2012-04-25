@@ -21,6 +21,9 @@
 *.sql
 *.sqlite
 *.ico
+*.pdb
+*.tlog
+*.cache
 # OS generated files #
 ######################
 .DS_Store*
