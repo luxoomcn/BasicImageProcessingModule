@@ -78,7 +78,6 @@ namespace BaicImageProcessModule
         private System.Windows.Forms.MenuItem menuItem12;
         private System.Windows.Forms.MenuItem customConvolutionFiltersItem;
         private System.Windows.Forms.MenuItem openingMorphologyFiltersItem;
-        private System.Windows.Forms.MenuItem medianFiltersItem;
         private System.Windows.Forms.MenuItem closingMorphologyFiltersItem;
         private System.Windows.Forms.MenuItem erosionMorphologyFiltersItem;
         private System.Windows.Forms.MenuItem menuItem15;
@@ -90,15 +89,10 @@ namespace BaicImageProcessModule
         private System.Windows.Forms.MenuItem extractGreenColorFiltersItem;
         private System.Windows.Forms.MenuItem extractRedBlueFiltersItem;
         private System.Windows.Forms.MenuItem menuItem18;
-        private System.Windows.Forms.MenuItem replaceRedColorFiltersItem;
-        private System.Windows.Forms.MenuItem menuItem20;
-        private System.Windows.Forms.MenuItem replaceGreenColorFiltersItem;
-        private System.Windows.Forms.MenuItem replaceBlueColorFiltersItem;
         private System.Windows.Forms.MenuItem orderedDitherBinaryFiltersItem;
         private System.Windows.Forms.MenuItem bayerDitherBinaryFiltersItem;
         private System.Windows.Forms.MenuItem menuItem23;
         private System.Windows.Forms.MenuItem resizeFiltersItem;
-        private System.Windows.Forms.MenuItem rotateFiltersItem;
         private System.Windows.Forms.MenuItem gaussianConvolutionFiltersItem;
         private System.Windows.Forms.MenuItem menuItem33;
         private System.Windows.Forms.MenuItem sharpenExConvolutionFiltersItem;
@@ -240,10 +234,6 @@ namespace BaicImageProcessModule
             this.extractRedColorFiltersItem = new System.Windows.Forms.MenuItem();
             this.extractGreenColorFiltersItem = new System.Windows.Forms.MenuItem();
             this.extractRedBlueFiltersItem = new System.Windows.Forms.MenuItem();
-            this.menuItem20 = new System.Windows.Forms.MenuItem();
-            this.replaceRedColorFiltersItem = new System.Windows.Forms.MenuItem();
-            this.replaceGreenColorFiltersItem = new System.Windows.Forms.MenuItem();
-            this.replaceBlueColorFiltersItem = new System.Windows.Forms.MenuItem();
             this.menuItem18 = new System.Windows.Forms.MenuItem();
             this.redColorFiltersItem = new System.Windows.Forms.MenuItem();
             this.greenColorFiltersItem = new System.Windows.Forms.MenuItem();
@@ -269,10 +259,8 @@ namespace BaicImageProcessModule
             this.menuItem33 = new System.Windows.Forms.MenuItem();
             this.gaussianConvolutionFiltersItem = new System.Windows.Forms.MenuItem();
             this.sharpenExConvolutionFiltersItem = new System.Windows.Forms.MenuItem();
-            this.medianFiltersItem = new System.Windows.Forms.MenuItem();
             this.menuItem23 = new System.Windows.Forms.MenuItem();
             this.resizeFiltersItem = new System.Windows.Forms.MenuItem();
-            this.rotateFiltersItem = new System.Windows.Forms.MenuItem();
             this.SuspendLayout();
             // 
             // mainMenu
@@ -479,10 +467,8 @@ namespace BaicImageProcessModule
             this.binaryFiltersItem,
             this.morphologyFiltersItem,
             this.convolutionFiltersItem,
-            this.medianFiltersItem,
             this.menuItem23,
-            this.resizeFiltersItem,
-            this.rotateFiltersItem});
+            this.resizeFiltersItem});
             this.filtersItem.MergeOrder = 1;
             this.filtersItem.Text = "Fi&lters";
             // 
@@ -496,10 +482,6 @@ namespace BaicImageProcessModule
             this.extractRedColorFiltersItem,
             this.extractGreenColorFiltersItem,
             this.extractRedBlueFiltersItem,
-            this.menuItem20,
-            this.replaceRedColorFiltersItem,
-            this.replaceGreenColorFiltersItem,
-            this.replaceBlueColorFiltersItem,
             this.menuItem18,
             this.redColorFiltersItem,
             this.greenColorFiltersItem,
@@ -541,49 +523,26 @@ namespace BaicImageProcessModule
             this.extractRedBlueFiltersItem.Text = "Extract Blue Channel";
             this.extractRedBlueFiltersItem.Click += new System.EventHandler(this.extractRedBlueFiltersItem_Click);
             // 
-            // menuItem20
-            // 
-            this.menuItem20.Index = 6;
-            this.menuItem20.Text = "-";
-            // 
-            // replaceRedColorFiltersItem
-            // 
-            this.replaceRedColorFiltersItem.Index = 7;
-            this.replaceRedColorFiltersItem.Text = "Replace Red Channel";
-            this.replaceRedColorFiltersItem.Click += new System.EventHandler(this.replaceRedColorFiltersItem_Click);
-            // 
-            // replaceGreenColorFiltersItem
-            // 
-            this.replaceGreenColorFiltersItem.Index = 8;
-            this.replaceGreenColorFiltersItem.Text = "Replace Green Channel";
-            this.replaceGreenColorFiltersItem.Click += new System.EventHandler(this.replaceGreenColorFiltersItem_Click);
-            // 
-            // replaceBlueColorFiltersItem
-            // 
-            this.replaceBlueColorFiltersItem.Index = 9;
-            this.replaceBlueColorFiltersItem.Text = "Replace Blue Channel";
-            this.replaceBlueColorFiltersItem.Click += new System.EventHandler(this.replaceBlueColorFiltersItem_Click);
-            // 
             // menuItem18
             // 
-            this.menuItem18.Index = 10;
+            this.menuItem18.Index = 6;
             this.menuItem18.Text = "-";
             // 
             // redColorFiltersItem
             // 
-            this.redColorFiltersItem.Index = 11;
+            this.redColorFiltersItem.Index = 7;
             this.redColorFiltersItem.Text = "Red";
             this.redColorFiltersItem.Click += new System.EventHandler(this.redColorFiltersItem_Click);
             // 
             // greenColorFiltersItem
             // 
-            this.greenColorFiltersItem.Index = 12;
+            this.greenColorFiltersItem.Index = 8;
             this.greenColorFiltersItem.Text = "Green";
             this.greenColorFiltersItem.Click += new System.EventHandler(this.greenColorFiltersItem_Click);
             // 
             // blueColorFiltersItem
             // 
-            this.blueColorFiltersItem.Index = 13;
+            this.blueColorFiltersItem.Index = 9;
             this.blueColorFiltersItem.Text = "Blue";
             this.blueColorFiltersItem.Click += new System.EventHandler(this.blueColorFiltersItem_Click);
             // 
@@ -728,28 +687,16 @@ namespace BaicImageProcessModule
             this.sharpenExConvolutionFiltersItem.Text = "Sharpen Ex";
             this.sharpenExConvolutionFiltersItem.Click += new System.EventHandler(this.sharpenExConvolutionFiltersItem_Click);
             // 
-            // medianFiltersItem
-            // 
-            this.medianFiltersItem.Index = 4;
-            this.medianFiltersItem.Text = "Me&dian";
-            this.medianFiltersItem.Click += new System.EventHandler(this.medianFiltersItem_Click);
-            // 
             // menuItem23
             // 
-            this.menuItem23.Index = 5;
+            this.menuItem23.Index = 4;
             this.menuItem23.Text = "-";
             // 
             // resizeFiltersItem
             // 
-            this.resizeFiltersItem.Index = 6;
+            this.resizeFiltersItem.Index = 5;
             this.resizeFiltersItem.Text = "&Resize";
             this.resizeFiltersItem.Click += new System.EventHandler(this.resizeFiltersItem_Click);
-            // 
-            // rotateFiltersItem
-            // 
-            this.rotateFiltersItem.Index = 7;
-            this.rotateFiltersItem.Text = "";
-            this.rotateFiltersItem.Click += new System.EventHandler(this.rotateFiltersItem_Click);
             // 
             // ImageDoc
             // 
@@ -1205,45 +1152,8 @@ namespace BaicImageProcessModule
             ApplyFilter( new ChannelFiltering( new IntRange( 0, 255 ), new IntRange( 0, 255 ), new IntRange( 0, 0 ) ) );
         }
 
-        // Color filtering
-        private void colorFilteringColorFiltersItem_Click( object sender, System.EventArgs e )
-        {
-            // check pixel format
-            if ( image.PixelFormat != PixelFormat.Format24bppRgb )
-            {
-                MessageBox.Show( "Color filtering can be applied to RGB images only", "Message", MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
-                return;
-            }
-
-            ColorFilteringForm form = new ColorFilteringForm( );
-            form.Image = image;
-
-            if ( form.ShowDialog( ) == DialogResult.OK )
-            {
-                ApplyFilter( form.Filter );
-            }
-        }
-
-              // Channels filtering
-        private void channelsFilteringColorFiltersItem_Click( object sender, System.EventArgs e )
-        {
-            // check pixel format
-            if ( image.PixelFormat != PixelFormat.Format24bppRgb )
-            {
-                MessageBox.Show( "Channels filtering can be applied to RGB images only", "Message", MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
-                return;
-            }
-
-            ChannelFilteringForm form = new ChannelFilteringForm( );
-            form.Image = image;
-
-            if ( form.ShowDialog( ) == DialogResult.OK )
-            {
-                ApplyFilter( form.Filter );
-            }
-        }
-
-        // Extract red channel of image
+       
+              // Extract red channel of image
         private void extractRedColorFiltersItem_Click( object sender, System.EventArgs e )
         {
             ApplyFilter( new ExtractChannel( RGB.R ) );

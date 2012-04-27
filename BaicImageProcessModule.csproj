@@ -154,12 +154,6 @@
     <Compile Include="Controls\GridArrayInt.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Filters Forms\ChannelFilteringForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Filters Forms\ColorFilteringForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Filters Forms\ConvolutionForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -204,12 +198,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\GridArrayInt.resx">
       <DependentUpon>GridArrayInt.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Filters Forms\ChannelFilteringForm.resx">
-      <DependentUpon>ChannelFilteringForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Filters Forms\ColorFilteringForm.resx">
-      <DependentUpon>ColorFilteringForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Filters Forms\ConvolutionForm.resx">
       <DependentUpon>ConvolutionForm.cs</DependentUpon>

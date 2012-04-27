@@ -12,20 +12,14 @@ C:\Users\simmon\Documents\luxProjects\Bipm\a1\obj\Debug\BaicImageProcessModule.C
 C:\Users\simmon\Documents\luxProjects\Bipm\a1\obj\Debug\BaicImageProcessModule.FilterPreview.resources
 C:\Users\simmon\Documents\luxProjects\Bipm\a1\obj\Debug\BaicImageProcessModule.GridArray.resources
 C:\Users\simmon\Documents\luxProjects\Bipm\a1\obj\Debug\BaicImageProcessModule.GridEventArgs.resources
-C:\Users\simmon\Documents\luxProjects\Bipm\a1\obj\Debug\BaicImageProcessModule.HuePicker.resources
-C:\Users\simmon\Documents\luxProjects\Bipm\a1\obj\Debug\BaicImageProcessModule.ChannelFilteringForm.resources
-C:\Users\simmon\Documents\luxProjects\Bipm\a1\obj\Debug\BaicImageProcessModule.ColorFilteringForm.resources
 C:\Users\simmon\Documents\luxProjects\Bipm\a1\obj\Debug\BaicImageProcessModule.ConvolutionForm.resources
 C:\Users\simmon\Documents\luxProjects\Bipm\a1\obj\Debug\BaicImageProcessModule.GaussianForm.resources
 C:\Users\simmon\Documents\luxProjects\Bipm\a1\obj\Debug\BaicImageProcessModule.MathMorphologyForm.resources
-C:\Users\simmon\Documents\luxProjects\Bipm\a1\obj\Debug\BaicImageProcessModule.MorphForm.resources
 C:\Users\simmon\Documents\luxProjects\Bipm\a1\obj\Debug\BaicImageProcessModule.ResizeForm.resources
 C:\Users\simmon\Documents\luxProjects\Bipm\a1\obj\Debug\BaicImageProcessModule.SharpenExForm.resources
 C:\Users\simmon\Documents\luxProjects\Bipm\a1\obj\Debug\BaicImageProcessModule.ThresholdForm.resources
-C:\Users\simmon\Documents\luxProjects\Bipm\a1\obj\Debug\BaicImageProcessModule.FourierDoc.resources
 C:\Users\simmon\Documents\luxProjects\Bipm\a1\obj\Debug\BaicImageProcessModule.ImageDoc.resources
 C:\Users\simmon\Documents\luxProjects\Bipm\a1\obj\Debug\BaicImageProcessModule.MainForm.resources
-C:\Users\simmon\Documents\luxProjects\Bipm\a1\obj\Debug\BaicImageProcessModule.SelectImageForm.resources
 C:\Users\simmon\Documents\luxProjects\Bipm\a1\obj\Debug\ResGen.read.1.tlog
 C:\Users\simmon\Documents\luxProjects\Bipm\a1\obj\Debug\ResGen.write.1.tlog
 C:\Users\simmon\Documents\luxProjects\Bipm\a1\obj\Debug\iplab.exe
@@ -58,3 +52,29 @@ C:\Users\simmon\Documents\luxProjects\Bipm\obj\Debug\BaicImageProcessModule.Imag
 C:\Users\simmon\Documents\luxProjects\Bipm\obj\Debug\BaicImageProcessModule.MainForm.resources
 C:\Users\simmon\Documents\luxProjects\Bipm\obj\Debug\ResGen.read.1.tlog
 C:\Users\simmon\Documents\luxProjects\Bipm\obj\Debug\ResGen.write.1.tlog
+C:\Users\simmon\Documents\luxProjects\Basic Image Processing Module\obj\Debug\iplab.exe
+C:\Users\simmon\Documents\luxProjects\Basic Image Processing Module\obj\Debug\iplab.pdb
+C:\Users\simmon\Documents\luxProjects\Basic Image Processing Module\bin\Debug\iplab.exe
+C:\Users\simmon\Documents\luxProjects\Basic Image Processing Module\bin\Debug\iplab.pdb
+C:\Users\simmon\Documents\luxProjects\Basic Image Processing Module\bin\Debug\AForge.dll
+C:\Users\simmon\Documents\luxProjects\Basic Image Processing Module\bin\Debug\AForge.Imaging.dll
+C:\Users\simmon\Documents\luxProjects\Basic Image Processing Module\bin\Debug\AForge.Math.dll
+C:\Users\simmon\Documents\luxProjects\Basic Image Processing Module\bin\Debug\DockingToolbar.dll
+C:\Users\simmon\Documents\luxProjects\Basic Image Processing Module\bin\Debug\SourceGrid2.dll
+C:\Users\simmon\Documents\luxProjects\Basic Image Processing Module\bin\Debug\SourceLibrary.dll
+C:\Users\simmon\Documents\luxProjects\Basic Image Processing Module\bin\Debug\WeifenLuo.WinFormsUI.dll
+C:\Users\simmon\Documents\luxProjects\Basic Image Processing Module\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\simmon\Documents\luxProjects\Basic Image Processing Module\obj\Debug\BaicImageProcessModule.ColorSlider.resources
+C:\Users\simmon\Documents\luxProjects\Basic Image Processing Module\obj\Debug\BaicImageProcessModule.FilterPreview.resources
+C:\Users\simmon\Documents\luxProjects\Basic Image Processing Module\obj\Debug\BaicImageProcessModule.GridArray.resources
+C:\Users\simmon\Documents\luxProjects\Basic Image Processing Module\obj\Debug\BaicImageProcessModule.GridEventArgs.resources
+C:\Users\simmon\Documents\luxProjects\Basic Image Processing Module\obj\Debug\BaicImageProcessModule.ConvolutionForm.resources
+C:\Users\simmon\Documents\luxProjects\Basic Image Processing Module\obj\Debug\BaicImageProcessModule.GaussianForm.resources
+C:\Users\simmon\Documents\luxProjects\Basic Image Processing Module\obj\Debug\BaicImageProcessModule.MathMorphologyForm.resources
+C:\Users\simmon\Documents\luxProjects\Basic Image Processing Module\obj\Debug\BaicImageProcessModule.ResizeForm.resources
+C:\Users\simmon\Documents\luxProjects\Basic Image Processing Module\obj\Debug\BaicImageProcessModule.SharpenExForm.resources
+C:\Users\simmon\Documents\luxProjects\Basic Image Processing Module\obj\Debug\BaicImageProcessModule.ThresholdForm.resources
+C:\Users\simmon\Documents\luxProjects\Basic Image Processing Module\obj\Debug\BaicImageProcessModule.ImageDoc.resources
+C:\Users\simmon\Documents\luxProjects\Basic Image Processing Module\obj\Debug\BaicImageProcessModule.MainForm.resources
+C:\Users\simmon\Documents\luxProjects\Basic Image Processing Module\obj\Debug\ResGen.read.1.tlog
+C:\Users\simmon\Documents\luxProjects\Basic Image Processing Module\obj\Debug\ResGen.write.1.tlog

@@ -11,7 +11,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("AForge")]
 [assembly: AssemblyProduct( "IPLab" )]
-[assembly: AssemblyCopyright( "IPLab © 2007" )]
+[assembly: AssemblyCopyright( "IPLab ?2007" )]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]		
 
