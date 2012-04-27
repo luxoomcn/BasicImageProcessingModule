@@ -753,8 +753,7 @@ namespace BaicImageProcessModule
                     break;
                 case ImageDocCommands.FitToSize:	// fit to screen
                     FitToScreen( );
-                    break;
-              
+                    break;              
                 case ImageDocCommands.Grayscale:	// grayscale
                     Grayscale( );
                     break;
@@ -769,10 +768,7 @@ namespace BaicImageProcessModule
                     break;
                 case ImageDocCommands.Resize:		// resize the image
                     ResizeImage( );
-                    break; 
-                case ImageDocCommands.Fourier:		// fourier transformation
-                    ForwardFourierTransformation( );
-                    break;
+                    break;               
             }
         }
 
@@ -1810,16 +1806,10 @@ namespace BaicImageProcessModule
         ZoomOut,
         ZoomOriginal,
         FitToSize,
-        Levels,
         Grayscale,
         Threshold,
         Morphology,
         Convolution,
-        Resize,
-        Rotate,
-        Brightness,
-        Contrast,
-        Saturation,
-        Fourier
+        Resize
     }
 }

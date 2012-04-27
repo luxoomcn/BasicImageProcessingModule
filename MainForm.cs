@@ -999,11 +999,9 @@ namespace BaicImageProcessModule
 						ImageDocCommands.Clone, ImageDocCommands.Crop,
 						ImageDocCommands.ZoomIn, ImageDocCommands.ZoomOut,
 						ImageDocCommands.ZoomOriginal, ImageDocCommands.FitToSize,
-						ImageDocCommands.Levels, ImageDocCommands.Grayscale,
+						ImageDocCommands.Grayscale,
 						ImageDocCommands.Threshold, ImageDocCommands.Morphology,
 						ImageDocCommands.Convolution, ImageDocCommands.Resize,
-						ImageDocCommands.Rotate, ImageDocCommands.Saturation,
-						ImageDocCommands.Fourier
 					};
 
 					((ImageDoc) doc).ExecuteCommand(cmd[e.Button.ImageIndex]);
