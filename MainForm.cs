@@ -1,1367 +1,1061 @@
-
-
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Drawing.Printing;
 using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Data;
+using System.IO;
 
-using AForge;
+using WeifenLuo.WinFormsUI;
+using rpaulo.toolbar;
 using AForge.Imaging;
-using AForge.Imaging.Filters;
-using AForge.Imaging.Textures;
 
-namespace ImageFilters
+namespace BaicImageProcessModule
 {
-    /// <summary>
-    /// Summary description for MainForm.
-    /// </summary>
-    public class MainForm : System.Windows.Forms.Form
-    {
-        private System.Windows.Forms.MenuItem fileItem;
-        private System.Windows.Forms.MenuItem openFileItem;
-        private System.Windows.Forms.MenuItem menuItem3;
-        private System.Windows.Forms.MenuItem exitFilrItem;
-        private System.Windows.Forms.OpenFileDialog openFileDialog;
-        private System.Windows.Forms.PictureBox pictureBox;
-        private System.Windows.Forms.MainMenu mainMenu;
-        private System.Windows.Forms.MenuItem sizeItem;
-        private System.Windows.Forms.MenuItem normalSizeItem;
-        private System.Windows.Forms.MenuItem stretchedSizeItem;
-        private System.Windows.Forms.MenuItem centeredSizeItem;
-        private System.Windows.Forms.MenuItem filtersItem;
-        private System.Windows.Forms.MenuItem noneFiltersItem;
-        private System.Windows.Forms.MenuItem menuItem1;
-        private System.Windows.Forms.MenuItem sepiaFiltersItem;
-        private System.Windows.Forms.MenuItem invertFiltersItem;
-        private System.Windows.Forms.MenuItem rotateChannelFiltersItem;
-        private System.Windows.Forms.MenuItem grayscaleFiltersItem;
-        private System.Windows.Forms.MenuItem colorFiltersItem;
-        private System.Windows.Forms.MenuItem menuItem2;
-        private System.Windows.Forms.MenuItem hueModifierFiltersItem;
-        private System.Windows.Forms.MenuItem saturationAdjustingFiltersItem;
-        private System.Windows.Forms.MenuItem brightnessAdjustingFiltersItem;
-        private System.Windows.Forms.MenuItem contrastAdjustingFiltersItem;
-        private System.Windows.Forms.MenuItem hslFiltersItem;
-        private System.Windows.Forms.MenuItem menuItem4;
-        private System.Windows.Forms.MenuItem yCbCrLinearFiltersItem;
-        private System.Windows.Forms.MenuItem yCbCrFiltersItem;
-        private System.Windows.Forms.MenuItem menuItem5;
-        private System.Windows.Forms.MenuItem thresholdFiltersItem;
-        private System.Windows.Forms.MenuItem floydFiltersItem;
-        private System.Windows.Forms.MenuItem orderedDitheringFiltersItem;
-        private System.Windows.Forms.MenuItem menuItem6;
-        private System.Windows.Forms.MenuItem convolutionFiltersItem;
-        private System.Windows.Forms.MenuItem sharpenFiltersItem;
-        private System.Windows.Forms.MenuItem menuItem7;
-        private System.Windows.Forms.MenuItem differenceEdgesFiltersItem;
-        private System.Windows.Forms.MenuItem homogenityEdgesFiltersItem;
-        private System.Windows.Forms.MenuItem sobelEdgesFiltersItem;
-        private System.Windows.Forms.MenuItem rgbLinearFiltersItem;
+	/// <summary>
+	/// Summary description for Form1.
+	/// </summary>
+	public class MainForm : System.Windows.Forms.Form, IDocumentsHost
+	{
+		private static string configFile = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "app.config");
+		private static string dockManagerConfigFile = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "DockManager.config");
+
+		private int unnamedNumber = 0;
+		private Configuration config = new Configuration();
+
+        #region System Windows Forms
+        private WeifenLuo.WinFormsUI.DockManager dockManager;
+		private System.Windows.Forms.MainMenu mainMenu;
+		private System.Windows.Forms.MenuItem fileItem;
+		private System.Windows.Forms.MenuItem exitFileItem;
+        private System.Windows.Forms.MenuItem OpenItem;
+		private System.Windows.Forms.MenuItem closeFileItem;
+        private System.Windows.Forms.MenuItem closeAllFileItem;
+        private System.Windows.Forms.MenuItem windowItem;
+		private System.Windows.Forms.StatusBarPanel zoomPanel;
+		private System.Windows.Forms.StatusBarPanel sizePanel;
+		private System.Windows.Forms.StatusBarPanel infoPanel;
+		private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.StatusBar statusBar;
+		private System.Windows.Forms.MenuItem menuItem1;
+        private System.Windows.Forms.MenuItem reloadFileItem;
+		private System.Windows.Forms.StatusBarPanel selectionPanel;
+		private System.Windows.Forms.OpenFileDialog ofd;
+		private System.Windows.Forms.StatusBarPanel colorPanel;
+        private System.Windows.Forms.ImageList imageList;
+		private System.Windows.Forms.ToolBar imageToolBar;
+		private System.Windows.Forms.ImageList imageList2;
+		private System.Windows.Forms.ToolBarButton cloneButton;
+		private System.Windows.Forms.ToolBarButton cropButton;
+		private System.Windows.Forms.ToolBarButton toolBarButton1;
+		private System.Windows.Forms.ToolBarButton toolBarButton2;
+		private System.Windows.Forms.ToolBarButton zoomInButton;
+		private System.Windows.Forms.ToolBarButton zoomOutButton;
+		private System.Windows.Forms.ToolBarButton toolBarButton3;
+        private System.Windows.Forms.ToolBarButton fitToScreenButton;
+		private System.Windows.Forms.ToolBarButton toolBarButton5;
+		private System.Windows.Forms.ToolBarButton levelsButton;
+		private System.Windows.Forms.ToolBarButton grayscaleButton;
+		private System.Windows.Forms.ToolBarButton thresholdButton;
+		private System.Windows.Forms.ToolBarButton toolBarButton6;
+		private System.Windows.Forms.ToolBarButton morphologyButton;
+        private System.Windows.Forms.ToolBarButton convolutionButton;
+		private System.Windows.Forms.ToolBarButton resizeButton;
+		private System.Windows.Forms.ToolBarButton toolBarButton7;
+		private System.Windows.Forms.ToolBarButton rotateButton;
+		private System.Windows.Forms.StatusBarPanel hslPanel;
+		private System.Windows.Forms.ToolBarButton toolBarButton8;
+		private System.Windows.Forms.ToolBarButton saturationButton;
+		private System.Windows.Forms.ToolBarButton fourierButton;
+		private System.Windows.Forms.MenuItem copyFileItem;
+		private System.Windows.Forms.MenuItem pasteFileItem;
+		private System.Windows.Forms.MenuItem menuItem5;
+        private System.Windows.Forms.MenuItem saveFileItem;
+        private System.Windows.Forms.SaveFileDialog sfd;
         private System.Windows.Forms.MenuItem menuItem8;
-        private System.Windows.Forms.MenuItem jitterFiltersItem;
-        private System.Windows.Forms.MenuItem oilFiltersItem;
-        private MenuItem gaussianFiltersItem;
-        private MenuItem textureFiltersItem;
-        private IContainer components;
+        private System.Windows.Forms.StatusBarPanel ycbcrPanel;
+		private System.ComponentModel.IContainer components;
+        #endregion
+        public MainForm()
+		{
+			//
+			// Required for Windows Form Designer support
+			//
+			InitializeComponent();
 
-        private System.Drawing.Bitmap sourceImage;
-        private MenuItem menuItem9;
-        private MenuItem BinaryDilatationFiltersItem;
-        private MenuItem BinaryErosionFiltersItem;
-        private MenuItem testFilterItem;
-        private MenuItem menuItem10;
-        private MenuItem menuItem11;
-        private MenuItem menuItemErode;
-        private MenuItem menuItemDilate;
-        private System.Drawing.Bitmap filteredImage;
+		
 
-        // Constructor
-        public MainForm( )
-        {
-            //
-            // Required for Windows Form Designer support
-            //
-            InitializeComponent( );
+		}
 
-            // set default size mode of picture box
-            pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-        }
+		/// <summary>
+		/// Clean up any resources being used.
+		/// </summary>
+		protected override void Dispose( bool disposing )
+		{
+			if( disposing )
+			{
+				if (components != null) 
+				{
+					components.Dispose();
+				}
+			}
+			base.Dispose( disposing );
+		}
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        protected override void Dispose( bool disposing )
-        {
-            if ( disposing )
-            {
-                if ( components != null )
-                {
-                    components.Dispose( );
-                }
-            }
-            base.Dispose( disposing );
-        }
-
-        #region Windows Form Designer generated code
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent( )
-        {
+		#region Windows Form Designer generated code
+		/// <summary>
+		/// Required method for Designer support - do not modify
+		/// the contents of this method with the code editor.
+		/// </summary>
+		private void InitializeComponent()
+		{
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.mainMenu = new System.Windows.Forms.MainMenu(this.components);
             this.fileItem = new System.Windows.Forms.MenuItem();
-            this.openFileItem = new System.Windows.Forms.MenuItem();
-            this.menuItem3 = new System.Windows.Forms.MenuItem();
-            this.exitFilrItem = new System.Windows.Forms.MenuItem();
-            this.filtersItem = new System.Windows.Forms.MenuItem();
-            this.noneFiltersItem = new System.Windows.Forms.MenuItem();
+            this.OpenItem = new System.Windows.Forms.MenuItem();
+            this.reloadFileItem = new System.Windows.Forms.MenuItem();
+            this.saveFileItem = new System.Windows.Forms.MenuItem();
             this.menuItem1 = new System.Windows.Forms.MenuItem();
-            this.grayscaleFiltersItem = new System.Windows.Forms.MenuItem();
-            this.sepiaFiltersItem = new System.Windows.Forms.MenuItem();
-            this.invertFiltersItem = new System.Windows.Forms.MenuItem();
-            this.rotateChannelFiltersItem = new System.Windows.Forms.MenuItem();
-            this.colorFiltersItem = new System.Windows.Forms.MenuItem();
-            this.rgbLinearFiltersItem = new System.Windows.Forms.MenuItem();
-            this.menuItem2 = new System.Windows.Forms.MenuItem();
-            this.hueModifierFiltersItem = new System.Windows.Forms.MenuItem();
-            this.saturationAdjustingFiltersItem = new System.Windows.Forms.MenuItem();
-            this.brightnessAdjustingFiltersItem = new System.Windows.Forms.MenuItem();
-            this.contrastAdjustingFiltersItem = new System.Windows.Forms.MenuItem();
-            this.hslFiltersItem = new System.Windows.Forms.MenuItem();
-            this.menuItem4 = new System.Windows.Forms.MenuItem();
-            this.yCbCrLinearFiltersItem = new System.Windows.Forms.MenuItem();
-            this.yCbCrFiltersItem = new System.Windows.Forms.MenuItem();
+            this.copyFileItem = new System.Windows.Forms.MenuItem();
+            this.pasteFileItem = new System.Windows.Forms.MenuItem();
             this.menuItem5 = new System.Windows.Forms.MenuItem();
-            this.thresholdFiltersItem = new System.Windows.Forms.MenuItem();
-            this.floydFiltersItem = new System.Windows.Forms.MenuItem();
-            this.orderedDitheringFiltersItem = new System.Windows.Forms.MenuItem();
-            this.menuItem6 = new System.Windows.Forms.MenuItem();
-            this.convolutionFiltersItem = new System.Windows.Forms.MenuItem();
-            this.sharpenFiltersItem = new System.Windows.Forms.MenuItem();
-            this.gaussianFiltersItem = new System.Windows.Forms.MenuItem();
-            this.menuItem7 = new System.Windows.Forms.MenuItem();
-            this.differenceEdgesFiltersItem = new System.Windows.Forms.MenuItem();
-            this.homogenityEdgesFiltersItem = new System.Windows.Forms.MenuItem();
-            this.sobelEdgesFiltersItem = new System.Windows.Forms.MenuItem();
+            this.closeFileItem = new System.Windows.Forms.MenuItem();
+            this.closeAllFileItem = new System.Windows.Forms.MenuItem();
             this.menuItem8 = new System.Windows.Forms.MenuItem();
-            this.jitterFiltersItem = new System.Windows.Forms.MenuItem();
-            this.oilFiltersItem = new System.Windows.Forms.MenuItem();
-            this.textureFiltersItem = new System.Windows.Forms.MenuItem();
-            this.menuItem9 = new System.Windows.Forms.MenuItem();
-            this.BinaryDilatationFiltersItem = new System.Windows.Forms.MenuItem();
-            this.BinaryErosionFiltersItem = new System.Windows.Forms.MenuItem();
-            this.testFilterItem = new System.Windows.Forms.MenuItem();
-            this.menuItem10 = new System.Windows.Forms.MenuItem();
-            this.sizeItem = new System.Windows.Forms.MenuItem();
-            this.normalSizeItem = new System.Windows.Forms.MenuItem();
-            this.stretchedSizeItem = new System.Windows.Forms.MenuItem();
-            this.centeredSizeItem = new System.Windows.Forms.MenuItem();
-            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.pictureBox = new System.Windows.Forms.PictureBox();
-            this.menuItem11 = new System.Windows.Forms.MenuItem();
-            this.menuItemErode = new System.Windows.Forms.MenuItem();
-            this.menuItemDilate = new System.Windows.Forms.MenuItem();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
+            this.exitFileItem = new System.Windows.Forms.MenuItem();
+            this.windowItem = new System.Windows.Forms.MenuItem();
+            this.statusBar = new System.Windows.Forms.StatusBar();
+            this.zoomPanel = new System.Windows.Forms.StatusBarPanel();
+            this.sizePanel = new System.Windows.Forms.StatusBarPanel();
+            this.selectionPanel = new System.Windows.Forms.StatusBarPanel();
+            this.colorPanel = new System.Windows.Forms.StatusBarPanel();
+            this.hslPanel = new System.Windows.Forms.StatusBarPanel();
+            this.ycbcrPanel = new System.Windows.Forms.StatusBarPanel();
+            this.infoPanel = new System.Windows.Forms.StatusBarPanel();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.dockManager = new WeifenLuo.WinFormsUI.DockManager();
+            this.imageList = new System.Windows.Forms.ImageList(this.components);
+            this.imageToolBar = new System.Windows.Forms.ToolBar();
+            this.cloneButton = new System.Windows.Forms.ToolBarButton();
+            this.toolBarButton1 = new System.Windows.Forms.ToolBarButton();
+            this.cropButton = new System.Windows.Forms.ToolBarButton();
+            this.toolBarButton2 = new System.Windows.Forms.ToolBarButton();
+            this.zoomInButton = new System.Windows.Forms.ToolBarButton();
+            this.zoomOutButton = new System.Windows.Forms.ToolBarButton();
+            this.toolBarButton3 = new System.Windows.Forms.ToolBarButton();
+            this.fitToScreenButton = new System.Windows.Forms.ToolBarButton();
+            this.toolBarButton5 = new System.Windows.Forms.ToolBarButton();
+            this.resizeButton = new System.Windows.Forms.ToolBarButton();
+            this.rotateButton = new System.Windows.Forms.ToolBarButton();
+            this.toolBarButton7 = new System.Windows.Forms.ToolBarButton();
+            this.levelsButton = new System.Windows.Forms.ToolBarButton();
+            this.grayscaleButton = new System.Windows.Forms.ToolBarButton();
+            this.thresholdButton = new System.Windows.Forms.ToolBarButton();
+            this.toolBarButton6 = new System.Windows.Forms.ToolBarButton();
+            this.morphologyButton = new System.Windows.Forms.ToolBarButton();
+            this.convolutionButton = new System.Windows.Forms.ToolBarButton();
+            this.toolBarButton8 = new System.Windows.Forms.ToolBarButton();
+            this.saturationButton = new System.Windows.Forms.ToolBarButton();
+            this.fourierButton = new System.Windows.Forms.ToolBarButton();
+            this.imageList2 = new System.Windows.Forms.ImageList(this.components);
+            this.ofd = new System.Windows.Forms.OpenFileDialog();
+            this.sfd = new System.Windows.Forms.SaveFileDialog();
+            ((System.ComponentModel.ISupportInitialize)(this.zoomPanel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.sizePanel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.selectionPanel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.colorPanel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.hslPanel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ycbcrPanel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.infoPanel)).BeginInit();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // mainMenu
             // 
             this.mainMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.fileItem,
-            this.filtersItem,
-            this.sizeItem,
-            this.menuItem11});
+            this.windowItem});
             // 
             // fileItem
             // 
             this.fileItem.Index = 0;
             this.fileItem.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-            this.openFileItem,
-            this.menuItem3,
-            this.exitFilrItem});
-            this.fileItem.Text = "&File";
-            // 
-            // openFileItem
-            // 
-            this.openFileItem.Index = 0;
-            this.openFileItem.Shortcut = System.Windows.Forms.Shortcut.CtrlO;
-            this.openFileItem.Text = "&Open";
-            this.openFileItem.Click += new System.EventHandler(this.openFileItem_Click);
-            // 
-            // menuItem3
-            // 
-            this.menuItem3.Index = 1;
-            this.menuItem3.Text = "-";
-            // 
-            // exitFilrItem
-            // 
-            this.exitFilrItem.Index = 2;
-            this.exitFilrItem.Text = "E&xit";
-            this.exitFilrItem.Click += new System.EventHandler(this.exitFilrItem_Click);
-            // 
-            // filtersItem
-            // 
-            this.filtersItem.Index = 1;
-            this.filtersItem.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-            this.noneFiltersItem,
+            this.OpenItem,
+            this.reloadFileItem,
+            this.saveFileItem,
             this.menuItem1,
-            this.grayscaleFiltersItem,
-            this.sepiaFiltersItem,
-            this.invertFiltersItem,
-            this.rotateChannelFiltersItem,
-            this.colorFiltersItem,
-            this.rgbLinearFiltersItem,
-            this.menuItem2,
-            this.hueModifierFiltersItem,
-            this.saturationAdjustingFiltersItem,
-            this.brightnessAdjustingFiltersItem,
-            this.contrastAdjustingFiltersItem,
-            this.hslFiltersItem,
-            this.menuItem4,
-            this.yCbCrLinearFiltersItem,
-            this.yCbCrFiltersItem,
+            this.copyFileItem,
+            this.pasteFileItem,
             this.menuItem5,
-            this.thresholdFiltersItem,
-            this.floydFiltersItem,
-            this.orderedDitheringFiltersItem,
-            this.menuItem6,
-            this.convolutionFiltersItem,
-            this.sharpenFiltersItem,
-            this.gaussianFiltersItem,
-            this.menuItem7,
-            this.differenceEdgesFiltersItem,
-            this.homogenityEdgesFiltersItem,
-            this.sobelEdgesFiltersItem,
+            this.closeFileItem,
+            this.closeAllFileItem,
             this.menuItem8,
-            this.jitterFiltersItem,
-            this.oilFiltersItem,
-            this.textureFiltersItem,
-            this.menuItem9,
-            this.BinaryDilatationFiltersItem,
-            this.BinaryErosionFiltersItem,
-            this.testFilterItem,
-            this.menuItem10});
-            this.filtersItem.Text = "Fi&lters";
+            this.exitFileItem});
+            this.fileItem.Text = "&File";
+            this.fileItem.Popup += new System.EventHandler(this.fileItem_Popup);
             // 
-            // noneFiltersItem
+            // OpenItem
             // 
-            this.noneFiltersItem.Index = 0;
-            this.noneFiltersItem.Text = "&None";
-            this.noneFiltersItem.Click += new System.EventHandler(this.noneFiltersItem_Click);
+            this.OpenItem.Index = 0;
+            this.OpenItem.Shortcut = System.Windows.Forms.Shortcut.CtrlO;
+            this.OpenItem.Text = "&Open";
+            this.OpenItem.Click += new System.EventHandler(this.OpenItem_Click);
+            // 
+            // reloadFileItem
+            // 
+            this.reloadFileItem.Index = 1;
+            this.reloadFileItem.Shortcut = System.Windows.Forms.Shortcut.CtrlR;
+            this.reloadFileItem.Text = "&Reload";
+            this.reloadFileItem.Click += new System.EventHandler(this.reloadFileItem_Click);
+            // 
+            // saveFileItem
+            // 
+            this.saveFileItem.Index = 2;
+            this.saveFileItem.Shortcut = System.Windows.Forms.Shortcut.CtrlS;
+            this.saveFileItem.Text = "&Save";
+            this.saveFileItem.Click += new System.EventHandler(this.saveFileItem_Click);
             // 
             // menuItem1
             // 
-            this.menuItem1.Index = 1;
+            this.menuItem1.Index = 3;
             this.menuItem1.Text = "-";
             // 
-            // grayscaleFiltersItem
+            // copyFileItem
             // 
-            this.grayscaleFiltersItem.Index = 2;
-            this.grayscaleFiltersItem.Text = "&Grayscale";
-            this.grayscaleFiltersItem.Click += new System.EventHandler(this.grayscaleFiltersItem_Click);
+            this.copyFileItem.Index = 4;
+            this.copyFileItem.Shortcut = System.Windows.Forms.Shortcut.CtrlC;
+            this.copyFileItem.Text = "&Copy";
+            this.copyFileItem.Click += new System.EventHandler(this.copyFileItem_Click);
             // 
-            // sepiaFiltersItem
+            // pasteFileItem
             // 
-            this.sepiaFiltersItem.Index = 3;
-            this.sepiaFiltersItem.Text = "&Sepia";
-            this.sepiaFiltersItem.Click += new System.EventHandler(this.sepiaFiltersItem_Click);
-            // 
-            // invertFiltersItem
-            // 
-            this.invertFiltersItem.Index = 4;
-            this.invertFiltersItem.Text = "&Invert";
-            this.invertFiltersItem.Click += new System.EventHandler(this.invertFiltersItem_Click);
-            // 
-            // rotateChannelFiltersItem
-            // 
-            this.rotateChannelFiltersItem.Index = 5;
-            this.rotateChannelFiltersItem.Text = "&Rotate channel";
-            this.rotateChannelFiltersItem.Click += new System.EventHandler(this.rotateChannelFiltersItem_Click);
-            // 
-            // colorFiltersItem
-            // 
-            this.colorFiltersItem.Index = 6;
-            this.colorFiltersItem.Text = "Color filtering";
-            this.colorFiltersItem.Click += new System.EventHandler(this.colorFiltersItem_Click);
-            // 
-            // rgbLinearFiltersItem
-            // 
-            this.rgbLinearFiltersItem.Index = 7;
-            this.rgbLinearFiltersItem.Text = "Levels linear correction";
-            this.rgbLinearFiltersItem.Click += new System.EventHandler(this.rgbLinearFiltersItem_Click);
-            // 
-            // menuItem2
-            // 
-            this.menuItem2.Index = 8;
-            this.menuItem2.Text = "-";
-            // 
-            // hueModifierFiltersItem
-            // 
-            this.hueModifierFiltersItem.Index = 9;
-            this.hueModifierFiltersItem.Text = "Hue modifier";
-            this.hueModifierFiltersItem.Click += new System.EventHandler(this.hueModifierFiltersItem_Click);
-            // 
-            // saturationAdjustingFiltersItem
-            // 
-            this.saturationAdjustingFiltersItem.Index = 10;
-            this.saturationAdjustingFiltersItem.Text = "Saturation adjusting";
-            this.saturationAdjustingFiltersItem.Click += new System.EventHandler(this.saturationAdjustingFiltersItem_Click);
-            // 
-            // brightnessAdjustingFiltersItem
-            // 
-            this.brightnessAdjustingFiltersItem.Index = 11;
-            this.brightnessAdjustingFiltersItem.Text = "Brightness adjusting";
-            this.brightnessAdjustingFiltersItem.Click += new System.EventHandler(this.brightnessAdjustingFiltersItem_Click);
-            // 
-            // contrastAdjustingFiltersItem
-            // 
-            this.contrastAdjustingFiltersItem.Index = 12;
-            this.contrastAdjustingFiltersItem.Text = "Contrast adjusting";
-            this.contrastAdjustingFiltersItem.Click += new System.EventHandler(this.contrastAdjustingFiltersItem_Click);
-            // 
-            // hslFiltersItem
-            // 
-            this.hslFiltersItem.Index = 13;
-            this.hslFiltersItem.Text = "HSL filtering";
-            this.hslFiltersItem.Click += new System.EventHandler(this.hslFiltersItem_Click);
-            // 
-            // menuItem4
-            // 
-            this.menuItem4.Index = 14;
-            this.menuItem4.Text = "-";
-            // 
-            // yCbCrLinearFiltersItem
-            // 
-            this.yCbCrLinearFiltersItem.Index = 15;
-            this.yCbCrLinearFiltersItem.Text = "YCbCr linear correction";
-            this.yCbCrLinearFiltersItem.Click += new System.EventHandler(this.yCbCrLinearFiltersItem_Click);
-            // 
-            // yCbCrFiltersItem
-            // 
-            this.yCbCrFiltersItem.Index = 16;
-            this.yCbCrFiltersItem.Text = "YCbCr filtering";
-            this.yCbCrFiltersItem.Click += new System.EventHandler(this.yCbCrFiltersItem_Click);
+            this.pasteFileItem.Index = 5;
+            this.pasteFileItem.Shortcut = System.Windows.Forms.Shortcut.CtrlV;
+            this.pasteFileItem.Text = "&Paste";
+            this.pasteFileItem.Click += new System.EventHandler(this.pasteFileItem_Click);
             // 
             // menuItem5
             // 
-            this.menuItem5.Index = 17;
+            this.menuItem5.Index = 6;
             this.menuItem5.Text = "-";
             // 
-            // thresholdFiltersItem
+            // closeFileItem
             // 
-            this.thresholdFiltersItem.Index = 18;
-            this.thresholdFiltersItem.Text = "Threshold &binarization";
-            this.thresholdFiltersItem.Click += new System.EventHandler(this.thresholdFiltersItem_Click);
+            this.closeFileItem.Index = 7;
+            this.closeFileItem.Shortcut = System.Windows.Forms.Shortcut.CtrlF4;
+            this.closeFileItem.Text = "C&lose";
+            this.closeFileItem.Click += new System.EventHandler(this.closeFileItem_Click);
             // 
-            // floydFiltersItem
+            // closeAllFileItem
             // 
-            this.floydFiltersItem.Index = 19;
-            this.floydFiltersItem.Text = "Floyd-Steinberg dithering";
-            this.floydFiltersItem.Click += new System.EventHandler(this.floydFiltersItem_Click);
-            // 
-            // orderedDitheringFiltersItem
-            // 
-            this.orderedDitheringFiltersItem.Index = 20;
-            this.orderedDitheringFiltersItem.Text = "Ordered dithering";
-            this.orderedDitheringFiltersItem.Click += new System.EventHandler(this.orderedDitheringFiltersItem_Click);
-            // 
-            // menuItem6
-            // 
-            this.menuItem6.Index = 21;
-            this.menuItem6.Text = "-";
-            // 
-            // convolutionFiltersItem
-            // 
-            this.convolutionFiltersItem.Index = 22;
-            this.convolutionFiltersItem.Text = "Convolution";
-            this.convolutionFiltersItem.Click += new System.EventHandler(this.convolutionFiltersItem_Click);
-            // 
-            // sharpenFiltersItem
-            // 
-            this.sharpenFiltersItem.Index = 23;
-            this.sharpenFiltersItem.Text = "Sharpen";
-            this.sharpenFiltersItem.Click += new System.EventHandler(this.sharpenFiltersItem_Click);
-            // 
-            // gaussianFiltersItem
-            // 
-            this.gaussianFiltersItem.Index = 24;
-            this.gaussianFiltersItem.Text = "Gaussian blur";
-            this.gaussianFiltersItem.Click += new System.EventHandler(this.gaussianFiltersItem_Click);
-            // 
-            // menuItem7
-            // 
-            this.menuItem7.Index = 25;
-            this.menuItem7.Text = "-";
-            // 
-            // differenceEdgesFiltersItem
-            // 
-            this.differenceEdgesFiltersItem.Index = 26;
-            this.differenceEdgesFiltersItem.Text = "Difference edge detector";
-            this.differenceEdgesFiltersItem.Click += new System.EventHandler(this.differenceEdgesFiltersItem_Click);
-            // 
-            // homogenityEdgesFiltersItem
-            // 
-            this.homogenityEdgesFiltersItem.Index = 27;
-            this.homogenityEdgesFiltersItem.Text = "Homogenity edge detector";
-            this.homogenityEdgesFiltersItem.Click += new System.EventHandler(this.homogenityEdgesFiltersItem_Click);
-            // 
-            // sobelEdgesFiltersItem
-            // 
-            this.sobelEdgesFiltersItem.Index = 28;
-            this.sobelEdgesFiltersItem.Text = "Sobel edge detector";
-            this.sobelEdgesFiltersItem.Click += new System.EventHandler(this.sobelEdgesFiltersItem_Click);
+            this.closeAllFileItem.Index = 8;
+            this.closeAllFileItem.Text = "Close All";
+            this.closeAllFileItem.Click += new System.EventHandler(this.closeAllFileItem_Click);
             // 
             // menuItem8
             // 
-            this.menuItem8.Index = 29;
+            this.menuItem8.Index = 9;
             this.menuItem8.Text = "-";
             // 
-            // jitterFiltersItem
+            // exitFileItem
             // 
-            this.jitterFiltersItem.Index = 30;
-            this.jitterFiltersItem.Text = "Jitter";
-            this.jitterFiltersItem.Click += new System.EventHandler(this.jitterFiltersItem_Click);
+            this.exitFileItem.Index = 10;
+            this.exitFileItem.Text = "E&xit";
+            this.exitFileItem.Click += new System.EventHandler(this.exitFileItem_Click);
             // 
-            // oilFiltersItem
+            // windowItem
             // 
-            this.oilFiltersItem.Index = 31;
-            this.oilFiltersItem.Text = "Oil Painting";
-            this.oilFiltersItem.Click += new System.EventHandler(this.oilFiltersItem_Click);
+            //this.windowItem.Index = 2;
+            this.windowItem.MdiList = true;
+            this.windowItem.MergeOrder = 3;
+            this.windowItem.Text = "&Window";
             // 
-            // textureFiltersItem
+            // statusBar
             // 
-            this.textureFiltersItem.Index = 32;
-            this.textureFiltersItem.Text = "Texture";
-            this.textureFiltersItem.Click += new System.EventHandler(this.textureFiltersItem_Click);
+            this.statusBar.Location = new System.Drawing.Point(0, 509);
+            this.statusBar.Name = "statusBar";
+            this.statusBar.Panels.AddRange(new System.Windows.Forms.StatusBarPanel[] {
+            this.zoomPanel,
+            this.sizePanel,
+            this.selectionPanel,
+            this.colorPanel,
+            this.hslPanel,
+            this.ycbcrPanel,
+            this.infoPanel});
+            this.statusBar.ShowPanels = true;
+            this.statusBar.Size = new System.Drawing.Size(792, 24);
+            this.statusBar.TabIndex = 1;
             // 
-            // menuItem9
+            // zoomPanel
             // 
-            this.menuItem9.Index = 33;
-            this.menuItem9.Text = "-";
+            this.zoomPanel.Name = "zoomPanel";
+            this.zoomPanel.ToolTipText = "Zoom coefficient";
+            this.zoomPanel.Width = 50;
             // 
-            // BinaryDilatationFiltersItem
+            // sizePanel
             // 
-            this.BinaryDilatationFiltersItem.Index = 34;
-            this.BinaryDilatationFiltersItem.Text = "BinaryDilatation";
-            this.BinaryDilatationFiltersItem.Click += new System.EventHandler(this.BinaryDilatationFiltersItem_Click);
+            this.sizePanel.Name = "sizePanel";
+            this.sizePanel.ToolTipText = "Image size";
             // 
-            // BinaryErosionFiltersItem
+            // selectionPanel
             // 
-            this.BinaryErosionFiltersItem.Index = 35;
-            this.BinaryErosionFiltersItem.Text = "BinaryErosion";
-            this.BinaryErosionFiltersItem.Click += new System.EventHandler(this.BinaryErosionFiltersItem_Click);
+            this.selectionPanel.Name = "selectionPanel";
+            this.selectionPanel.ToolTipText = "Current point and selection size";
+            this.selectionPanel.Width = 120;
             // 
-            // testFilterItem
+            // colorPanel
             // 
-            this.testFilterItem.Index = 36;
-            this.testFilterItem.Text = "MosaicFilter";
-            this.testFilterItem.Click += new System.EventHandler(this.testFilterItem_Click);
+            this.colorPanel.Name = "colorPanel";
+            this.colorPanel.ToolTipText = "Current color";
+            this.colorPanel.Width = 110;
             // 
-            // menuItem10
+            // hslPanel
             // 
-            this.menuItem10.Index = 37;
-            this.menuItem10.Text = "GaussSmooth";
-            this.menuItem10.Click += new System.EventHandler(this.menuItem10_Click);
+            this.hslPanel.Name = "hslPanel";
+            this.hslPanel.Width = 130;
             // 
-            // sizeItem
+            // ycbcrPanel
             // 
-            this.sizeItem.Index = 2;
-            this.sizeItem.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-            this.normalSizeItem,
-            this.stretchedSizeItem,
-            this.centeredSizeItem});
-            this.sizeItem.Text = "&Size mode";
-            this.sizeItem.Popup += new System.EventHandler(this.sizeItem_Popup);
+            this.ycbcrPanel.Name = "ycbcrPanel";
+            this.ycbcrPanel.Width = 145;
             // 
-            // normalSizeItem
+            // infoPanel
             // 
-            this.normalSizeItem.Index = 0;
-            this.normalSizeItem.Text = "&Normal";
-            this.normalSizeItem.Click += new System.EventHandler(this.normalSizeItem_Click);
+            this.infoPanel.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Spring;
+            this.infoPanel.Name = "infoPanel";
+            this.infoPanel.Width = 120;
             // 
-            // stretchedSizeItem
+            // panel1
             // 
-            this.stretchedSizeItem.Index = 1;
-            this.stretchedSizeItem.Text = "&Stretched";
-            this.stretchedSizeItem.Click += new System.EventHandler(this.stretchedSizeItem_Click);
+            this.panel1.Controls.Add(this.dockManager);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(792, 509);
+            this.panel1.TabIndex = 2;
             // 
-            // centeredSizeItem
+            // dockManager
             // 
-            this.centeredSizeItem.Index = 2;
-            this.centeredSizeItem.Text = "&Centered";
-            this.centeredSizeItem.Click += new System.EventHandler(this.centeredSizeItem_Click);
+            this.dockManager.ActiveAutoHideContent = null;
+            this.dockManager.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dockManager.Location = new System.Drawing.Point(0, 0);
+            this.dockManager.Name = "dockManager";
+            this.dockManager.Size = new System.Drawing.Size(792, 509);
+            this.dockManager.TabIndex = 2;
+            this.dockManager.ActiveDocumentChanged += new System.EventHandler(this.dockManager_ActiveDocumentChanged);
             // 
-            // openFileDialog
+            // imageList
             // 
-            this.openFileDialog.Filter = "Image files (*.jpg,*.png,*.tif,*.bmp,*.gif)|*.jpg;*.png;*.tif;*.bmp;*.gif|JPG fil" +
+            this.imageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList.ImageStream")));
+            this.imageList.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList.Images.SetKeyName(0, "");
+            this.imageList.Images.SetKeyName(1, "");
+            this.imageList.Images.SetKeyName(2, "");
+            this.imageList.Images.SetKeyName(3, "");
+            this.imageList.Images.SetKeyName(4, "");
+            this.imageList.Images.SetKeyName(5, "");
+            // 
+            // imageToolBar
+            // 
+            this.imageToolBar.Appearance = System.Windows.Forms.ToolBarAppearance.Flat;
+            this.imageToolBar.Buttons.AddRange(new System.Windows.Forms.ToolBarButton[] {
+            this.cloneButton,
+            this.toolBarButton1,
+            this.cropButton,
+            this.toolBarButton2,
+            this.zoomInButton,
+            this.zoomOutButton,
+            this.toolBarButton3,
+            this.fitToScreenButton,
+            this.toolBarButton5,
+            this.resizeButton,
+            this.rotateButton,
+            this.toolBarButton7,
+            this.levelsButton,
+            this.grayscaleButton,
+            this.thresholdButton,
+            this.toolBarButton6,
+            this.morphologyButton,
+            this.convolutionButton,
+            this.toolBarButton8,
+            this.saturationButton,
+            this.fourierButton});
+            this.imageToolBar.Divider = false;
+            this.imageToolBar.Dock = System.Windows.Forms.DockStyle.None;
+            this.imageToolBar.DropDownArrows = true;
+            this.imageToolBar.ImageList = this.imageList2;
+            this.imageToolBar.Location = new System.Drawing.Point(0, 507);
+            this.imageToolBar.Name = "imageToolBar";
+            this.imageToolBar.ShowToolTips = true;
+            this.imageToolBar.Size = new System.Drawing.Size(566, 26);
+            this.imageToolBar.TabIndex = 3;
+            this.imageToolBar.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler(this.imageToolBar_ButtonClick);
+            // 
+            // cloneButton
+            // 
+            this.cloneButton.ImageIndex = 0;
+            this.cloneButton.Name = "cloneButton";
+            this.cloneButton.ToolTipText = "Clone the image";
+            // 
+            // toolBarButton1
+            // 
+            this.toolBarButton1.Name = "toolBarButton1";
+            this.toolBarButton1.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
+            // 
+            // cropButton
+            // 
+            this.cropButton.ImageIndex = 1;
+            this.cropButton.Name = "cropButton";
+            this.cropButton.ToolTipText = "Crop image";
+            // 
+            // toolBarButton2
+            // 
+            this.toolBarButton2.Name = "toolBarButton2";
+            this.toolBarButton2.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
+            // 
+            // zoomInButton
+            // 
+            this.zoomInButton.ImageIndex = 2;
+            this.zoomInButton.Name = "zoomInButton";
+            this.zoomInButton.ToolTipText = "Zoom In";
+            // 
+            // zoomOutButton
+            // 
+            this.zoomOutButton.ImageIndex = 3;
+            this.zoomOutButton.Name = "zoomOutButton";
+            this.zoomOutButton.ToolTipText = "Zoom out";
+            // 
+            // toolBarButton3
+            // 
+            this.toolBarButton3.ImageIndex = 4;
+            this.toolBarButton3.Name = "toolBarButton3";
+            this.toolBarButton3.ToolTipText = "Original size";
+            // 
+            // fitToScreenButton
+            // 
+            this.fitToScreenButton.ImageIndex = 5;
+            this.fitToScreenButton.Name = "fitToScreenButton";
+            this.fitToScreenButton.ToolTipText = "Fit to window size";
+            // 
+            // toolBarButton5
+            // 
+            this.toolBarButton5.Name = "toolBarButton5";
+            this.toolBarButton5.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
+            // 
+            // resizeButton
+            // 
+            this.resizeButton.ImageIndex = 11;
+            this.resizeButton.Name = "resizeButton";
+            this.resizeButton.ToolTipText = "Resize the image";
+            // 
+            // rotateButton
+            // 
+            this.rotateButton.ImageIndex = 12;
+            this.rotateButton.Name = "rotateButton";
+            this.rotateButton.ToolTipText = "Rotate the image";
+            // 
+            // toolBarButton7
+            // 
+            this.toolBarButton7.Name = "toolBarButton7";
+            this.toolBarButton7.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
+            // 
+            // levelsButton
+            // 
+            this.levelsButton.ImageIndex = 6;
+            this.levelsButton.Name = "levelsButton";
+            this.levelsButton.ToolTipText = "Levels correction";
+            // 
+            // grayscaleButton
+            // 
+            this.grayscaleButton.ImageIndex = 7;
+            this.grayscaleButton.Name = "grayscaleButton";
+            this.grayscaleButton.ToolTipText = "Grayscale";
+            // 
+            // thresholdButton
+            // 
+            this.thresholdButton.ImageIndex = 8;
+            this.thresholdButton.Name = "thresholdButton";
+            this.thresholdButton.ToolTipText = "Threshold";
+            // 
+            // toolBarButton6
+            // 
+            this.toolBarButton6.Name = "toolBarButton6";
+            this.toolBarButton6.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
+            // 
+            // morphologyButton
+            // 
+            this.morphologyButton.ImageIndex = 9;
+            this.morphologyButton.Name = "morphologyButton";
+            this.morphologyButton.ToolTipText = "Custom morphology operator";
+            // 
+            // convolutionButton
+            // 
+            this.convolutionButton.ImageIndex = 10;
+            this.convolutionButton.Name = "convolutionButton";
+            this.convolutionButton.ToolTipText = "Custom convolution operator";
+            // 
+            // toolBarButton8
+            // 
+            this.toolBarButton8.Name = "toolBarButton8";
+            this.toolBarButton8.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
+            // 
+            // saturationButton
+            // 
+            this.saturationButton.ImageIndex = 13;
+            this.saturationButton.Name = "saturationButton";
+            this.saturationButton.ToolTipText = "Saturation (HSL)";
+            // 
+            // fourierButton
+            // 
+            this.fourierButton.ImageIndex = 14;
+            this.fourierButton.Name = "fourierButton";
+            this.fourierButton.ToolTipText = "Fourier Transformation";
+            // 
+            // imageList2
+            // 
+            this.imageList2.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList2.ImageStream")));
+            this.imageList2.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList2.Images.SetKeyName(0, "");
+            this.imageList2.Images.SetKeyName(1, "");
+            this.imageList2.Images.SetKeyName(2, "");
+            this.imageList2.Images.SetKeyName(3, "");
+            this.imageList2.Images.SetKeyName(4, "");
+            this.imageList2.Images.SetKeyName(5, "");
+            this.imageList2.Images.SetKeyName(6, "");
+            this.imageList2.Images.SetKeyName(7, "");
+            this.imageList2.Images.SetKeyName(8, "");
+            this.imageList2.Images.SetKeyName(9, "");
+            this.imageList2.Images.SetKeyName(10, "");
+            this.imageList2.Images.SetKeyName(11, "");
+            this.imageList2.Images.SetKeyName(12, "");
+            this.imageList2.Images.SetKeyName(13, "");
+            this.imageList2.Images.SetKeyName(14, "");
+            // 
+            // ofd
+            // 
+            this.ofd.Filter = "Image files (*.jpg,*.png,*.tif,*.bmp,*.gif)|*.jpg;*.png;*.tif;*.bmp;*.gif|JPG fil" +
     "es (*.jpg)|*.jpg|PNG files (*.png)|*.png|TIF files (*.tif)|*.tif|BMP files (*.bm" +
     "p)|*.bmp|GIF files (*.gif)|*.gif";
-            this.openFileDialog.Title = "Open image";
+            this.ofd.Title = "Open image";
             // 
-            // pictureBox
+            // sfd
             // 
-            this.pictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBox.Location = new System.Drawing.Point(6, -4);
-            this.pictureBox.Name = "pictureBox";
-            this.pictureBox.Size = new System.Drawing.Size(475, 305);
-            this.pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox.TabIndex = 0;
-            this.pictureBox.TabStop = false;
-            // 
-            // menuItem11
-            // 
-            this.menuItem11.Index = 3;
-            this.menuItem11.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-            this.menuItemErode,
-            this.menuItemDilate});
-            this.menuItem11.Text = "&Morphology";
-            // 
-            // menuItemErode
-            // 
-            this.menuItemErode.Index = 0;
-            this.menuItemErode.Text = "Erode";
-            this.menuItemErode.Click += new System.EventHandler(this.menuItemErode_Click);
-            // 
-            // menuItemDilate
-            // 
-            this.menuItemDilate.Index = 1;
-            this.menuItemDilate.Text = "Dilate";
-            this.menuItemDilate.Click += new System.EventHandler(this.menuItemDilate_Click);
+            this.sfd.Filter = "JPG files (*.jpg)|*.jpg|BMP files (*.bmp)|*.bmp";
+            this.sfd.Title = "Save image";
             // 
             // MainForm
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(6, 14);
-            this.ClientSize = new System.Drawing.Size(493, 313);
-            this.Controls.Add(this.pictureBox);
+            this.ClientSize = new System.Drawing.Size(792, 533);
+            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.statusBar);
+            this.Controls.Add(this.imageToolBar);
+            this.IsMdiContainer = true;
             this.Menu = this.mainMenu;
-            this.MinimumSize = new System.Drawing.Size(384, 258);
             this.Name = "MainForm";
-            this.Text = "Image Processing filters ";
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Image Processing Lab";
+            this.Closing += new System.ComponentModel.CancelEventHandler(this.MainForm_Closing);
+            ((System.ComponentModel.ISupportInitialize)(this.zoomPanel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.sizePanel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.selectionPanel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.colorPanel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.hslPanel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ycbcrPanel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.infoPanel)).EndInit();
+            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
-        }
-        #endregion
+		}
+		#endregion
 
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main( )
+		/// <summary>
+		/// The main entry point for the application.
+		/// </summary>
+		[STAThread]
+		static void Main() 
+		{
+			Application.Run(new MainForm());
+		}
+
+		#region IDocumentsHost implementation
+
+		// Create new document on change on existent or modify it
+		public bool CreateNewDocumentOnChange
+		{
+			get { return config.openInNewDoc; }
+		}
+
+		// Remember or not an image, so we can back one step
+		public bool RememberOnChange
+		{
+			get { return config.rememberOnChange; }
+		}
+
+		// Create new document
+		public bool NewDocument(Bitmap image)
+		{
+			unnamedNumber++;
+
+			ImageDoc imgDoc = new ImageDoc(image, (IDocumentsHost) this);
+
+			imgDoc.Text = "Image " + unnamedNumber.ToString();
+			imgDoc.Show(dockManager);
+			imgDoc.Focus();
+
+			// set events
+			SetupDocumentEvents(imgDoc);
+
+			return true;
+		}
+
+
+		#endregion
+
+		// On form closing
+		private void MainForm_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+		{
+			// close all files
+			foreach (Content c in dockManager.Documents)
+				c.Close();
+
+			// save configuration
+			config.mainWindowLocation = this.Location;
+			config.mainWindowSize = this.Size;
+			config.Save(configFile);
+			// save dock manager configuration
+			dockManager.SaveAsXml(dockManagerConfigFile);
+		}
+
+		
+
+		// Main tool bar clicked
+		private void mainToolBar_ButtonClick(object sender, System.Windows.Forms.ToolBarButtonClickEventArgs e)
+		{
+			switch (e.Button.ImageIndex)
+			{
+				case 0:		// open an image
+					OpenFile();
+					break;
+				case 1:		// save file
+					SaveFile();
+					break;
+				case 2:		// copy
+					CopyToClipboard();
+					break;
+				case 3:		// paste
+					PasteFromClipboard();
+					break;
+				
+			}
+		}
+
+		// active document changed
+		private void dockManager_ActiveDocumentChanged(object sender, System.EventArgs e)
+		{
+			Content		doc = dockManager.ActiveDocument;
+			ImageDoc	imgDoc = (doc is ImageDoc) ? (ImageDoc) doc : null;
+
+			UpdateZoomStatus(imgDoc);
+
+			UpdateSizeStatus(doc);
+		}
+
+		
+		// on File item popum - set state ot child menu items
+		private void fileItem_Popup(object sender, System.EventArgs e)
+		{
+			Content	doc = dockManager.ActiveDocument;
+			bool	docOpened = (doc != null);
+
+			closeFileItem.Enabled = docOpened;
+			closeAllFileItem.Enabled = (dockManager.Documents.Length > 0);
+			reloadFileItem.Enabled = ((docOpened) && (doc is ImageDoc) && (((ImageDoc) doc).FileName != null));
+
+			saveFileItem.Enabled = docOpened;
+			copyFileItem.Enabled = docOpened;
+			pasteFileItem.Enabled = (Clipboard.GetDataObject().GetDataPresent(DataFormats.Bitmap));
+
+			
+		}
+
+		// Exit application
+		private void exitFileItem_Click(object sender, System.EventArgs e)
+		{
+			Close();
+		}
+
+		// Setup events
+		private void SetupDocumentEvents(ImageDoc doc)
+		{
+			
+			doc.ZoomChanged += new System.EventHandler(this.document_ZoomChanged);
+			doc.MouseImagePosition += new ImageDoc.SelectionEventHandler(this.document_MouseImagePosition);
+			doc.SelectionChanged += new ImageDoc.SelectionEventHandler(this.document_SelectionChanged);
+		}
+
+		// Open file
+		private void OpenFile()
+		{
+			if (ofd.ShowDialog() == DialogResult.OK)
+			{
+				ImageDoc imgDoc = null;
+				
+				try
+				{
+					// create image document
+					imgDoc = new ImageDoc(ofd.FileName, (IDocumentsHost) this);
+					imgDoc.Text = Path.GetFileName(ofd.FileName);
+
+				}
+				catch (ApplicationException ex)
+				{
+					MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
+
+				if (imgDoc != null)
+				{
+					imgDoc.Show(dockManager);
+					imgDoc.Focus();
+
+					// set events
+					SetupDocumentEvents(imgDoc);
+				}
+			}		
+		}
+
+
+		// On "File->Open" item clicked
+		private void OpenItem_Click(object sender, System.EventArgs e)
+		{
+			OpenFile();
+		}
+
+		// Reload file
+		private void reloadFileItem_Click(object sender, System.EventArgs e)
+		{
+			Content	doc = dockManager.ActiveDocument;
+
+			if ((doc != null) && (doc is ImageDoc))
+			{
+				try
+				{
+					((ImageDoc) doc).Reload();
+				}
+				catch (ApplicationException ex)
+				{
+					MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
+			}
+		}
+
+		// Save file
+		private void SaveFile()
+		{
+			Content	doc = dockManager.ActiveDocument;
+
+			if (doc != null)
+			{
+				// set initial file name
+				if ((doc is ImageDoc) && (((ImageDoc) doc).FileName != null))
+				{
+					sfd.FileName = Path.GetFileName(((ImageDoc) doc).FileName);
+				}
+				else
+				{
+					sfd.FileName = doc.Text + ".jpg";
+				}
+
+				sfd.FilterIndex = 0;
+
+				// show dialog
+				if (sfd.ShowDialog(this) == DialogResult.OK)
+				{
+					ImageFormat format = ImageFormat.Jpeg;
+
+					// resolve file format
+					switch (Path.GetExtension(sfd.FileName).ToLower())
+					{
+						case ".jpg":
+							format = ImageFormat.Jpeg;
+							break;
+						case ".bmp":
+							format = ImageFormat.Bmp;
+							break;
+						default:
+							MessageBox.Show(this, "Unsupported image format was specified", "Error",
+								MessageBoxButtons.OK, MessageBoxIcon.Error);
+							return;
+					}
+
+					// save the image
+					try
+					{
+						if (doc is ImageDoc)
+						{
+							((ImageDoc) doc).Image.Save(sfd.FileName, format);
+						}
+				
+					}
+					catch (Exception)
+					{
+						MessageBox.Show(this, "Failed writing image file", "Error",
+							MessageBoxButtons.OK, MessageBoxIcon.Error);
+					}
+				}
+			}
+		}
+
+		// On "File->Save" - save the file
+		private void saveFileItem_Click(object sender, System.EventArgs e)
+		{
+			SaveFile();
+		}
+
+		// Copy image to clipboard
+		private void CopyToClipboard()
+		{
+			Content	doc = dockManager.ActiveDocument;
+
+			if (doc != null)
+			{
+				if (doc is ImageDoc)
+				{
+					Clipboard.SetDataObject(((ImageDoc) doc).Image, true);
+				}
+			
+			}
+		}
+
+		// On "File->Copy" - copy image to clipboard
+		private void copyFileItem_Click(object sender, System.EventArgs e)
+		{
+			CopyToClipboard();
+		}
+
+		// Paste image from clipboard
+		private void PasteFromClipboard()
+		{
+			if (Clipboard.GetDataObject().GetDataPresent(DataFormats.Bitmap))
+			{
+				ImageDoc imgDoc = new ImageDoc((Bitmap) Clipboard.GetDataObject().GetData(DataFormats.Bitmap), (IDocumentsHost) this);
+
+				imgDoc.Text = "Image " + unnamedNumber.ToString();
+				imgDoc.Show(dockManager);
+				imgDoc.Focus();
+
+				// set events
+				SetupDocumentEvents(imgDoc);
+			}
+		}
+
+		// On "File->Paste" - paste image from clipboard
+		private void pasteFileItem_Click(object sender, System.EventArgs e)
+		{
+			PasteFromClipboard();
+		}
+
+		// Close file
+		private void closeFileItem_Click(object sender, System.EventArgs e)
+		{
+			if (dockManager.ActiveDocument != null)
+				dockManager.ActiveDocument.Close();
+		}
+
+		// Close all files
+		private void closeAllFileItem_Click(object sender, System.EventArgs e)
+		{
+			foreach (Content c in dockManager.Documents)
+				c.Close();
+		}
+
+
+		// On "Options->Open in new Document" click
+		private void openInNewOptionsItem_Click(object sender, System.EventArgs e)
+		{
+			config.openInNewDoc = !config.openInNewDoc;
+		}
+
+		// On "Options->Remember on change" click
+		private void rememberOptionsItem_Click(object sender, System.EventArgs e)
+		{
+			config.rememberOnChange = !config.rememberOnChange;
+		}
+
+	
+		// On "View->Center" - center image
+		private void centerViewItem_Click(object sender, System.EventArgs e)
+		{
+			Content	doc = dockManager.ActiveDocument;
+
+			if ((doc != null) && (doc is ImageDoc))
+				((ImageDoc) doc).Center();
+		}
+
+
+		// On zoom factor changed
+		private void document_ZoomChanged(object sender, System.EventArgs e)
+		{
+			UpdateZoomStatus((ImageDoc) sender);
+		}
+
+		// On mouse position over image changed
+		private void document_MouseImagePosition(object sender, SelectionEventArgs e)
+		{
+			if (e.Location.X >= 0)
+			{
+				this.selectionPanel.Text = string.Format( "({0}, {1})", e.Location.X, e.Location.Y );
+
+				// get current color
+				Bitmap image = ((ImageDoc) sender).Image;
+				if (image.PixelFormat == PixelFormat.Format24bppRgb)
+				{
+					Color	color = image.GetPixel(e.Location.X, e.Location.Y);
+					RGB		rgb = new RGB( color );
+					YCbCr	ycbcr = new YCbCr( );
+
+					AForge.Imaging.ColorConverter.RGB2YCbCr( rgb, ycbcr );
+
+					// RGB
+					this.colorPanel.Text = string.Format( "RGB: {0}; {1}; {2}", color.R, color.G, color.B );
+					// HSL
+					this.hslPanel.Text = string.Format( "HSL: {0}; {1:F3}; {2:F3}", (int) color.GetHue(), color.GetSaturation(), color.GetBrightness() );
+					// YCbCr
+					this.ycbcrPanel.Text = string.Format( "YCbCr: {0:F3}; {1:F3}; {2:F3}", ycbcr.Y, ycbcr.Cb, ycbcr.Cr );
+				}
+				else if (image.PixelFormat == PixelFormat.Format8bppIndexed)
+				{
+					Color color = image.GetPixel(e.Location.X, e.Location.Y);
+					this.colorPanel.Text	= "Gray: " + color.R.ToString();
+					this.hslPanel.Text		= "";
+					this.ycbcrPanel.Text	= "";
+				}
+			}
+			else
+			{
+				this.selectionPanel.Text	= "";
+				this.colorPanel.Text		= "";
+				this.hslPanel.Text			= "";
+				this.ycbcrPanel.Text		= "";
+			}
+		}
+
+		// On selection changed
+		private void document_SelectionChanged(object sender, SelectionEventArgs e)
+		{
+			this.selectionPanel.Text = string.Format( "({0}, {1}) - {2} x {3}", e.Location.X, e.Location.Y, e.Size.Width, e.Size.Height );
+		}
+
+		// Update size status
+		private void UpdateSizeStatus(Content doc)
+		{
+			if (doc != null)
+			{
+				int w = 0, h = 0;
+
+				if (doc is ImageDoc)
+				{
+					w = ((ImageDoc) doc).ImageWidth;
+					h = ((ImageDoc) doc).ImageHeight;
+				}
+				
+				sizePanel.Text = w.ToString() + " x " + h.ToString();
+			}
+			else
+			{
+				sizePanel.Text = String.Empty;
+			}
+		}
+
+		// Update zoom status
+		private void UpdateZoomStatus(ImageDoc imgDoc)
+		{
+			if (imgDoc != null)
+			{
+				int zoom = (int)(imgDoc.Zoom * 100);
+				zoomPanel.Text = zoom.ToString() + "%";
+			}
+			else
+			{
+				zoomPanel.Text = String.Empty;
+			}
+		}
+
+		// On image toolbar clicked
+		private void imageToolBar_ButtonClick(object sender, System.Windows.Forms.ToolBarButtonClickEventArgs e)
+		{
+			Content	doc = dockManager.ActiveDocument;
+
+			if (doc != null)
+			{
+				if (doc is ImageDoc)
+				{
+					ImageDocCommands[] cmd = new ImageDocCommands[]
+					{
+						ImageDocCommands.Clone, ImageDocCommands.Crop,
+						ImageDocCommands.ZoomIn, ImageDocCommands.ZoomOut,
+						ImageDocCommands.ZoomOriginal, ImageDocCommands.FitToSize,
+						ImageDocCommands.Levels, ImageDocCommands.Grayscale,
+						ImageDocCommands.Threshold, ImageDocCommands.Morphology,
+						ImageDocCommands.Convolution, ImageDocCommands.Resize,
+						ImageDocCommands.Rotate, ImageDocCommands.Saturation,
+						ImageDocCommands.Fourier
+					};
+
+					((ImageDoc) doc).ExecuteCommand(cmd[e.Button.ImageIndex]);
+				}
+			}
+		}
+
+		
+
+		// Print document page
+		private void printDocument_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
+		{
+			Content	doc = dockManager.ActiveDocument;
+
+			if (doc != null)
+			{
+				Bitmap image = null;
+
+				// get an image to print
+				if (doc is ImageDoc)
+				{
+					image = ((ImageDoc) doc).Image;
+				}
+		
+				System.Diagnostics.Debug.WriteLine("X: " + e.MarginBounds.Left + ", Y = " + e.MarginBounds.Top + ", width = " + e.MarginBounds.Width + ", height = " + e.MarginBounds.Height);
+				System.Diagnostics.Debug.WriteLine("X: " + e.PageBounds.Left + ", Y = " + e.PageBounds.Top + ", width = " + e.PageBounds.Width + ", height = " + e.PageBounds.Height);
+
+				int		width = image.Width;
+				int		height = image.Height;
+
+				if ((width > e.MarginBounds.Width) || (height > e.MarginBounds.Height))
+				{
+					float f = Math.Min((float) e.MarginBounds.Width / width, (float) e.MarginBounds.Height / height);
+
+					width = (int)(f * width);
+					height = (int)(f * height);
+				}
+
+				e.Graphics.DrawImage(image, e.MarginBounds.Left, e.MarginBounds.Top, width, height);
+			}
+		}
+
+
+        public bool NewDocument(ComplexImage image)
         {
-            Application.Run( new MainForm( ) );
+            throw new NotImplementedException();
         }
 
-        // On File->Exit menu item
-        private void exitFilrItem_Click( object sender, System.EventArgs e )
+
+        public Bitmap GetImage(object sender, string text, Size size, PixelFormat format)
         {
-            Application.Exit( );
+            throw new NotImplementedException();
         }
-
-        // On File->Open menu item
-        private void openFileItem_Click( object sender, System.EventArgs e )
-        {
-            try
-            {
-                // show file open dialog
-                if ( openFileDialog.ShowDialog( ) == DialogResult.OK )
-                {
-                    // load image
-                    sourceImage = (Bitmap) Bitmap.FromFile( openFileDialog.FileName );
-
-                    // check pixel format
-                    if ( ( sourceImage.PixelFormat == PixelFormat.Format16bppGrayScale ) ||
-                         ( Bitmap.GetPixelFormatSize( sourceImage.PixelFormat ) > 32 ) )
-                    {
-                        MessageBox.Show( "The demo application supports only color images.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
-                        // free image
-                        sourceImage.Dispose( );
-                        sourceImage = null;
-                    }
-                    else
-                    {
-                        // make sure the image has 24 bpp format
-                        if ( sourceImage.PixelFormat != PixelFormat.Format24bppRgb )
-                        {
-                            Bitmap temp = AForge.Imaging.Image.Clone( sourceImage, PixelFormat.Format24bppRgb );
-                            sourceImage.Dispose( );
-                            sourceImage = temp;
-                        }
-                    }
-
-                    ClearCurrentImage( );
-
-                    // display image
-                    pictureBox.Image = sourceImage;
-                    noneFiltersItem.Checked = true;
-
-                    // enable filters menu
-                    filtersItem.Enabled = ( sourceImage != null );
-                }
-            }
-            catch
-            {
-                MessageBox.Show( "Failed loading the image", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
-            }
-        }
-
-        // On Size mode->Normal menu item
-        private void normalSizeItem_Click( object sender, System.EventArgs e )
-        {
-            pictureBox.SizeMode = PictureBoxSizeMode.Normal;
-        }
-
-        // On Size mode->Stretched menu item
-        private void stretchedSizeItem_Click( object sender, System.EventArgs e )
-        {
-            pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-        }
-
-        // On Size mode->Centered size menu item
-        private void centeredSizeItem_Click( object sender, System.EventArgs e )
-        {
-            pictureBox.SizeMode = PictureBoxSizeMode.CenterImage;
-        }
-
-        // On Size menu item popup
-        private void sizeItem_Popup( object sender, System.EventArgs e )
-        {
-            normalSizeItem.Checked = ( pictureBox.SizeMode == PictureBoxSizeMode.Normal );
-            stretchedSizeItem.Checked = ( pictureBox.SizeMode == PictureBoxSizeMode.StretchImage );
-            centeredSizeItem.Checked = ( pictureBox.SizeMode == PictureBoxSizeMode.CenterImage );
-        }
-
-        // Clear current image in picture box
-        private void ClearCurrentImage( )
-        {
-            // clear current image from picture box
-            pictureBox.Image = null;
-            // free current image
-            if ( ( noneFiltersItem.Checked == false ) && ( filteredImage != null ) )
-            {
-                filteredImage.Dispose( );
-                filteredImage = null;
-            }
-            // uncheck all menu items
-            foreach ( MenuItem item in filtersItem.MenuItems )
-                item.Checked = false;
-        }
-
-        // Apply filter to the source image and show the filtered image
-        private void ApplyFilter( IFilter filter )
-        {
-            ClearCurrentImage( );
-            // apply filter
-            filteredImage = filter.Apply( sourceImage );
-            // display filtered image
-            pictureBox.Image = filteredImage;
-        }
-
-        // On Filters->None item
-        private void noneFiltersItem_Click( object sender, System.EventArgs e )
-        {
-            ClearCurrentImage( );
-            // display source image
-            pictureBox.Image = sourceImage;
-            noneFiltersItem.Checked = true;
-        }
-
-        // On Filters->Grayscale item
-        private void grayscaleFiltersItem_Click( object sender, System.EventArgs e )
-        {
-            ApplyFilter( Grayscale.CommonAlgorithms.BT709 );
-            BradleyLocalThresholding filter = new BradleyLocalThresholding();
-            // apply the filter
-            filter.ApplyInPlace(filteredImage);
-            grayscaleFiltersItem.Checked = true;
-        }
-
-        // On Filters->Sepia item
-        private void sepiaFiltersItem_Click( object sender, System.EventArgs e )
-        {
-            ApplyFilter( new Sepia( ) );
-            sepiaFiltersItem.Checked = true;
-        }
-
-        // On Filters->Invert item
-        private void invertFiltersItem_Click( object sender, System.EventArgs e )
-        {
-            ApplyFilter( new Invert( ) );
-            invertFiltersItem.Checked = true;
-        }
-
-        // On Filters->Rotate Channels item
-        private void rotateChannelFiltersItem_Click( object sender, System.EventArgs e )
-        {
-            ApplyFilter( new RotateChannels( ) );
-            rotateChannelFiltersItem.Checked = true;
-        }
-
-        // On Filters->Color filtering
-        private void colorFiltersItem_Click( object sender, System.EventArgs e )
-        {
-            ApplyFilter( new ColorFiltering( new IntRange( 25, 230 ), new IntRange( 25, 230 ), new IntRange( 25, 230 ) ) );
-            colorFiltersItem.Checked = true;
-        }
-
-        // On Filters->Hue modifier
-        private void hueModifierFiltersItem_Click( object sender, System.EventArgs e )
-        {
-            ApplyFilter( new HueModifier( 50 ) );
-            hueModifierFiltersItem.Checked = true;
-        }
-
-        // On Filters->Saturation adjusting
-        private void saturationAdjustingFiltersItem_Click( object sender, System.EventArgs e )
-        {
-            ApplyFilter( new SaturationCorrection( 0.15f ) );
-            saturationAdjustingFiltersItem.Checked = true;
-        }
-
-        // On Filters->Brightness adjusting
-        private void brightnessAdjustingFiltersItem_Click( object sender, System.EventArgs e )
-        {
-            ApplyFilter( new BrightnessCorrection( ) );
-            brightnessAdjustingFiltersItem.Checked = true;
-        }
-
-        // On Filters->Contrast adjusting
-        private void contrastAdjustingFiltersItem_Click( object sender, System.EventArgs e )
-        {
-            ApplyFilter( new ContrastCorrection( ) );
-            contrastAdjustingFiltersItem.Checked = true;
-        }
-
-        // On Filters->HSL filtering
-        private void hslFiltersItem_Click( object sender, System.EventArgs e )
-        {
-            ApplyFilter( new HSLFiltering( new IntRange( 330, 30 ), new Range( 0, 1 ), new Range( 0, 1 ) ) );
-            hslFiltersItem.Checked = true;
-        }
-
-        // On Filters->YCbCr filtering
-        private void yCbCrLinearFiltersItem_Click( object sender, System.EventArgs e )
-        {
-            YCbCrLinear filter = new YCbCrLinear( );
-
-            filter.InCb = new Range( -0.3f, 0.3f );
-
-            ApplyFilter( filter );
-            yCbCrLinearFiltersItem.Checked = true;
-        }
-
-        // On Filters->YCbCr filtering
-        private void yCbCrFiltersItem_Click( object sender, System.EventArgs e )
-        {
-            ApplyFilter( new YCbCrFiltering( new Range( 0.2f, 0.9f ), new Range( -0.3f, 0.3f ), new Range( -0.3f, 0.3f ) ) );
-            yCbCrFiltersItem.Checked = true;
-        }
-
-        // On Filters->Threshold binarization
-        private void thresholdFiltersItem_Click( object sender, System.EventArgs e )
-        {
-            // save original image
-            Bitmap originalImage = sourceImage;
-            // get grayscale image
-            sourceImage = Grayscale.CommonAlgorithms.RMY.Apply( sourceImage );
-            // apply threshold filter
-            ApplyFilter( new Threshold( ) );
-            // delete grayscale image and restore original
-            sourceImage.Dispose( );
-            sourceImage = originalImage;
-
-            thresholdFiltersItem.Checked = true;
-        }
-
-        // On Filters->Floyd-Steinberg dithering
-        private void floydFiltersItem_Click( object sender, System.EventArgs e )
-        {
-            // save original image
-            Bitmap originalImage = sourceImage;
-            // get grayscale image
-            sourceImage = Grayscale.CommonAlgorithms.RMY.Apply( sourceImage );
-            // apply threshold filter
-            ApplyFilter( new FloydSteinbergDithering( ) );
-            // delete grayscale image and restore original
-            sourceImage.Dispose( );
-            sourceImage = originalImage;
-
-            floydFiltersItem.Checked = true;
-        }
-
-        // On Filters->Ordered dithering
-        private void orderedDitheringFiltersItem_Click( object sender, System.EventArgs e )
-        {
-            // save original image
-            Bitmap originalImage = sourceImage;
-            // get grayscale image
-            sourceImage = Grayscale.CommonAlgorithms.RMY.Apply( sourceImage );
-            // apply threshold filter
-            ApplyFilter( new OrderedDithering( ) );
-            // delete grayscale image and restore original
-            sourceImage.Dispose( );
-            sourceImage = originalImage;
-
-            orderedDitheringFiltersItem.Checked = true;
-        }
-
-        // On Filters->Correlation
-        private void convolutionFiltersItem_Click( object sender, System.EventArgs e )
-        {
-            ApplyFilter( new Convolution( new int[,] {
-								{ 1, 2, 3, 2, 1 },
-								{ 2, 4, 5, 4, 2 },
-								{ 3, 5, 6, 5, 3 },
-								{ 2, 4, 5, 4, 2 },
-								{ 1, 2, 3, 2, 1 } } ) );
-            convolutionFiltersItem.Checked = true;
-        }
-
-        // On Filters->Sharpen
-        private void sharpenFiltersItem_Click( object sender, System.EventArgs e )
-        {
-            ApplyFilter( new Sharpen( ) );
-            sharpenFiltersItem.Checked = true;
-        }
-
-        // On Filters->Difference edge detector
-        private void differenceEdgesFiltersItem_Click( object sender, System.EventArgs e )
-        {
-            // save original image
-            Bitmap originalImage = sourceImage;
-            // get grayscale image
-            sourceImage = Grayscale.CommonAlgorithms.RMY.Apply( sourceImage );
-            // apply edge filter
-            ApplyFilter( new DifferenceEdgeDetector( ) );
-            // delete grayscale image and restore original
-            sourceImage.Dispose( );
-            sourceImage = originalImage;
-
-            differenceEdgesFiltersItem.Checked = true;
-        }
-
-        // On Filters->Homogenity edge detector
-        private void homogenityEdgesFiltersItem_Click( object sender, System.EventArgs e )
-        {
-            // save original image
-            Bitmap originalImage = sourceImage;
-            // get grayscale image
-            sourceImage = Grayscale.CommonAlgorithms.RMY.Apply( sourceImage );
-            // apply edge filter
-            ApplyFilter( new HomogenityEdgeDetector( ) );
-            // delete grayscale image and restore original
-            sourceImage.Dispose( );
-            sourceImage = originalImage;
-
-            homogenityEdgesFiltersItem.Checked = true;
-        }
-
-        // On Filters->Sobel edge detector
-        private void sobelEdgesFiltersItem_Click( object sender, System.EventArgs e )
-        {
-            // save original image
-            Bitmap originalImage = sourceImage;
-            // get grayscale image
-            sourceImage = Grayscale.CommonAlgorithms.RMY.Apply( sourceImage );
-            // apply edge filter
-            ApplyFilter( new SobelEdgeDetector( ) );
-            // delete grayscale image and restore original
-            sourceImage.Dispose( );
-            sourceImage = originalImage;
-
-            sobelEdgesFiltersItem.Checked = true;
-        }
-
-        // On Filters->Levels Linear Correction
-        private void rgbLinearFiltersItem_Click( object sender, System.EventArgs e )
-        {
-            LevelsLinear filter = new LevelsLinear( );
-
-            filter.InRed = new IntRange( 30, 230 );
-            filter.InGreen = new IntRange( 50, 240 );
-            filter.InBlue = new IntRange( 10, 210 );
-
-            ApplyFilter( filter );
-            rgbLinearFiltersItem.Checked = true;
-        }
-
-        // On Filters->Jitter
-        private void jitterFiltersItem_Click( object sender, System.EventArgs e )
-        {
-            ApplyFilter( new Jitter( ) );
-            jitterFiltersItem.Checked = true;
-        }
-
-        // On Filters->Oil Painting
-        private void oilFiltersItem_Click( object sender, System.EventArgs e )
-        {
-            ApplyFilter( new OilPainting( ) );
-            oilFiltersItem.Checked = true;
-        }
-
-        // On Filters->Gaussin blur
-        private void gaussianFiltersItem_Click( object sender, EventArgs e )
-        {
-            ApplyFilter( new GaussianBlur( 2.0, 7 ) );
-            gaussianFiltersItem.Checked = true;
-        }
-
-        // On Filters->Texture
-        private void textureFiltersItem_Click( object sender, EventArgs e )
-        {
-            ApplyFilter( new Texturer( new TextileTexture( ), 1.0, 0.8 ) );
-            textureFiltersItem.Checked = true;
-        }
-
-        // On Filters->BinaryDilatation3x3
-        private void BinaryDilatationFiltersItem_Click(object sender, EventArgs e)
-        {
-            ApplyFilter(Grayscale.CommonAlgorithms.BT709);
-            // ApplyFilter(new SobelEdgeDetector());
-            BinaryDilatation3x3 filter = new BinaryDilatation3x3();
-            // apply the filter
-            filter.ApplyInPlace(filteredImage);
-            BinaryDilatationFiltersItem.Checked= true;
-        }
-        
-        // On Filters->BinaryErosion3x3
-        private void BinaryErosionFiltersItem_Click(object sender, EventArgs e)
-        {
-            ApplyFilter(Grayscale.CommonAlgorithms.BT709);
-            // ApplyFilter(new SobelEdgeDetector());
-            BinaryErosion3x3 filter = new BinaryErosion3x3();
-            // apply the filter
-            filter.ApplyInPlace(filteredImage);
-            BinaryErosionFiltersItem.Checked = true;
-        }
-
-        private void testFilterItem_Click(object sender, EventArgs e)
-        {
-            MosaicFilter mosaic = new MosaicFilter();
-            pictureBox.Image = mosaic.ProcessBitmap(sourceImage, 8);
-            testFilterItem.Checked = true; 
-
-        }
-
-        private void menuItem10_Click(object sender, EventArgs e)
-        {
-            // define mean filter kernel
-            int[,] kernel = {
-            { 1, 1, 1 },
-            { 1, 1, 1 },
-            { 1, 1, 1 } };
-            // create filter
-            Convolution filter = new Convolution(kernel);
-            // apply the filter
-            filter.ApplyInPlace(sourceImage);
-            menuItem10.Checked = true; 
-
-        }
-
-
-        private void menuItemErode_Click(object sender, EventArgs e)
-        {
-              struction struForm = new struction();
-              struForm.Text = "Erosion operation of structural elements";
-                if (struForm.ShowDialog() == DialogResult.OK)
-                {
-                    Rectangle rect = new Rectangle(0, 0, sourceImage.Width, sourceImage.Height);
-                    System.Drawing.Imaging.BitmapData bmpData = sourceImage.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadWrite, sourceImage.PixelFormat);
-                    IntPtr ptr = bmpData.Scan0;
-                    int bytes = sourceImage.Width * sourceImage.Height;
-                    byte[] grayValues = new byte[bytes];
-                    System.Runtime.InteropServices.Marshal.Copy(ptr, grayValues, 0, bytes);
-
-                    byte flagStru = struForm.GetStruction;
-
-                    byte[] tempArray = new byte[bytes];
-                    for (int i = 0; i < bytes; i++)
-                    {
-                        tempArray[i] = 255;
-                    }
-
-                    switch (flagStru)
-                    {
-                        case 0x11:
-                            for (int i = 0; i < sourceImage.Height; i++)
-                            {
-                                for (int j = 1; j < sourceImage.Width - 1; j++)
-                                {
-                                    if (grayValues[i * sourceImage.Width + j] == 0 &&
-                                        grayValues[i * sourceImage.Width + j + 1] == 0 &&
-                                        grayValues[i * sourceImage.Width + j - 1] == 0)
-                                    {
-                                        tempArray[i * sourceImage.Width + j] = 0;
-                                    }
-
-                                }
-                            }
-                            break;
-                        case 0x21:
-                            for (int i = 0; i < sourceImage.Height; i++)
-                            {
-                                for (int j = 2; j < sourceImage.Width - 2; j++)
-                                {
-                                    if (grayValues[i * sourceImage.Width + j] == 0 &&
-                                        grayValues[i * sourceImage.Width + j + 1] == 0 &&
-                                        grayValues[i * sourceImage.Width + j - 1] == 0 &&
-                                        grayValues[i * sourceImage.Width + j + 2] == 0 &&
-                                        grayValues[i * sourceImage.Width + j - 2] == 0)
-                                    {
-                                        tempArray[i * sourceImage.Width + j] = 0;
-                                    }
-
-                                }
-                            }
-                            break;
-                        case 0x12:
-                            for (int i = 1; i < sourceImage.Height - 1; i++)
-                            {
-                                for (int j = 0; j < sourceImage.Width; j++)
-                                {
-                                    if (grayValues[i * sourceImage.Width + j] == 0 &&
-                                        grayValues[(i - 1) * sourceImage.Width + j] == 0 &&
-                                        grayValues[(i + 1) * sourceImage.Width + j] == 0)
-                                    {
-                                        tempArray[i * sourceImage.Width + j] = 0;
-                                    }
-
-                                }
-                            }
-                            break;
-                        case 0x22:
-                            for (int i = 2; i < sourceImage.Height - 2; i++)
-                            {
-                                for (int j = 0; j < sourceImage.Width; j++)
-                                {
-                                    if (grayValues[i * sourceImage.Width + j] == 0 &&
-                                        grayValues[(i - 1) * sourceImage.Width + j] == 0 &&
-                                        grayValues[(i + 1) * sourceImage.Width + j] == 0 &&
-                                        grayValues[(i - 2) * sourceImage.Width + j] == 0 &&
-                                        grayValues[(i + 2) * sourceImage.Width + j] == 0)
-                                    {
-                                        tempArray[i * sourceImage.Width + j] = 0;
-                                    }
-
-                                }
-                            }
-                            break;
-                        case 0x14:
-                            for (int i = 1; i < sourceImage.Height - 1; i++)
-                            {
-                                for (int j = 1; j < sourceImage.Width - 1; j++)
-                                {
-                                    if (grayValues[i * sourceImage.Width + j] == 0 &&
-                                        grayValues[(i - 1) * sourceImage.Width + j] == 0 &&
-                                        grayValues[(i + 1) * sourceImage.Width + j] == 0 &&
-                                        grayValues[i * sourceImage.Width + j + 1] == 0 &&
-                                        grayValues[i * sourceImage.Width + j - 1] == 0)
-                                    {
-                                        tempArray[i * sourceImage.Width + j] = 0;
-                                    }
-
-                                }
-                            }
-                            break;
-                        case 0x24:
-                            for (int i = 2; i < sourceImage.Height - 2; i++)
-                            {
-                                for (int j = 2; j < sourceImage.Width - 2; j++)
-                                {
-                                    if (grayValues[i * sourceImage.Width + j] == 0 &&
-                                        grayValues[(i - 1) * sourceImage.Width + j] == 0 &&
-                                        grayValues[(i + 1) * sourceImage.Width + j] == 0 &&
-                                        grayValues[(i - 2) * sourceImage.Width + j] == 0 &&
-                                        grayValues[(i + 2) * sourceImage.Width + j] == 0 &&
-                                        grayValues[i * sourceImage.Width + j + 1] == 0 &&
-                                        grayValues[i * sourceImage.Width + j - 1] == 0 &&
-                                        grayValues[i * sourceImage.Width + j + 2] == 0 &&
-                                        grayValues[i * sourceImage.Width + j - 2] == 0)
-                                    {
-                                        tempArray[i * sourceImage.Width + j] = 0;
-                                    }
-
-                                }
-                            }
-                            break;
-                        case 0x18:
-                            for (int i = 1; i < sourceImage.Height - 1; i++)
-                            {
-                                for (int j = 1; j < sourceImage.Width - 1; j++)
-                                {
-                                    if (grayValues[i * sourceImage.Width + j] == 0 &&
-                                        grayValues[(i - 1) * sourceImage.Width + j] == 0 &&
-                                        grayValues[(i + 1) * sourceImage.Width + j] == 0 &&
-                                        grayValues[i * sourceImage.Width + j + 1] == 0 &&
-                                        grayValues[i * sourceImage.Width + j - 1] == 0 &&
-                                        grayValues[(i - 1) * sourceImage.Width + j - 1] == 0 &&
-                                        grayValues[(i + 1) * sourceImage.Width + j - 1] == 0 &&
-                                        grayValues[(i - 1) * sourceImage.Width + j + 1] == 0 &&
-                                        grayValues[(i + 1) * sourceImage.Width + j + 1] == 0)
-                                    {
-                                        tempArray[i * sourceImage.Width + j] = 0;
-                                    }
-
-                                }
-                            }
-                            break;
-                        case 0x28:
-                            for (int i = 2; i < sourceImage.Height - 2; i++)
-                            {
-                                for (int j = 2; j < sourceImage.Width - 2; j++)
-                                {
-                                    if (grayValues[(i - 2) * sourceImage.Width + j - 2] == 0 &&
-                                        grayValues[(i - 2) * sourceImage.Width + j - 1] == 0 &&
-                                        grayValues[(i - 2) * sourceImage.Width + j] == 0 &&
-                                        grayValues[(i - 2) * sourceImage.Width + j + 1] == 0 &&
-                                        grayValues[(i - 2) * sourceImage.Width + j + 2] == 0 &&
-                                        grayValues[(i - 1) * sourceImage.Width + j - 2] == 0 &&
-                                        grayValues[(i - 1) * sourceImage.Width + j - 1] == 0 &&
-                                        grayValues[(i - 1) * sourceImage.Width + j] == 0 &&
-                                        grayValues[(i - 1) * sourceImage.Width + j + 1] == 0 &&
-                                        grayValues[(i - 1) * sourceImage.Width + j + 2] == 0 &&
-                                        grayValues[i * sourceImage.Width + j - 2] == 0 &&
-                                        grayValues[i * sourceImage.Width + j - 1] == 0 &&
-                                        grayValues[i * sourceImage.Width + j] == 0 &&
-                                        grayValues[i * sourceImage.Width + j + 1] == 0 &&
-                                        grayValues[i * sourceImage.Width + j + 2] == 0 &&
-                                        grayValues[(i + 2) * sourceImage.Width + j - 2] == 0 &&
-                                        grayValues[(i + 2) * sourceImage.Width + j - 1] == 0 &&
-                                        grayValues[(i + 2) * sourceImage.Width + j] == 0 &&
-                                        grayValues[(i + 2) * sourceImage.Width + j + 1] == 0 &&
-                                        grayValues[(i + 2) * sourceImage.Width + j + 2] == 0 &&
-                                        grayValues[(i + 1) * sourceImage.Width + j - 2] == 0 &&
-                                        grayValues[(i + 1) * sourceImage.Width + j - 1] == 0 &&
-                                        grayValues[(i + 1) * sourceImage.Width + j] == 0 &&
-                                        grayValues[(i + 1) * sourceImage.Width + j + 1] == 0 &&
-                                        grayValues[(i + 1) * sourceImage.Width + j + 2] == 0)
-                                    {
-                                        tempArray[i * sourceImage.Width + j] = 0;
-                                    }
-
-                                }
-                            }
-                            break;
-                        default:
-                            MessageBox.Show("Erro Erodition Element£¡");
-                            break;
-                    }
-                    grayValues = (byte[])tempArray.Clone();
-
-                    System.Runtime.InteropServices.Marshal.Copy(grayValues, 0, ptr, bytes);
-                    sourceImage.UnlockBits(bmpData);
-                    pictureBox.Image = sourceImage;
-                }
-               
-                sourceImage.Dispose();
-                menuItemErode.Checked = true;
-        }
-
-        private void menuItemDilate_Click(object sender, EventArgs e)
-        {
-              struction struForm = new struction();
-                struForm.Text = "Dilation operation structual element";
-                if (struForm.ShowDialog() == DialogResult.OK)
-                {
-                    Rectangle rect = new Rectangle(0, 0, sourceImage.Width, sourceImage.Height);
-                    System.Drawing.Imaging.BitmapData bmpData = sourceImage.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadWrite, sourceImage.PixelFormat);
-                    IntPtr ptr = bmpData.Scan0;
-                    int bytes = sourceImage.Width * sourceImage.Height;
-                    byte[] grayValues = new byte[bytes];
-                    System.Runtime.InteropServices.Marshal.Copy(ptr, grayValues, 0, bytes);
-
-                    byte flagStru = struForm.GetStruction;
-
-                    byte[] tempArray = new byte[bytes];
-                    for (int i = 0; i < bytes; i++)
-                    {
-                        tempArray[i] = 255;
-                    }
-
-                    switch (flagStru)
-                    {
-                        case 0x11:
-                            for (int i = 0; i < sourceImage.Height; i++)
-                            {
-                                for (int j = 1; j < sourceImage.Width - 1; j++)
-                                {
-                                    if (grayValues[i * sourceImage.Width + j] == 0 ||
-                                        grayValues[i * sourceImage.Width + j + 1] == 0 ||
-                                        grayValues[i * sourceImage.Width + j - 1] == 0)
-                                    {
-                                        tempArray[i * sourceImage.Width + j] = 0;
-                                    }
-
-                                }
-                            }
-                            break;
-                        case 0x21:
-                            for (int i = 0; i < sourceImage.Height; i++)
-                            {
-                                for (int j = 2; j < sourceImage.Width - 2; j++)
-                                {
-                                    if (grayValues[i * sourceImage.Width + j] == 0 ||
-                                        grayValues[i * sourceImage.Width + j + 1] == 0 ||
-                                        grayValues[i * sourceImage.Width + j - 1] == 0 ||
-                                        grayValues[i * sourceImage.Width + j + 2] == 0 ||
-                                        grayValues[i * sourceImage.Width + j - 2] == 0)
-                                    {
-                                        tempArray[i * sourceImage.Width + j] = 0;
-                                    }
-
-                                }
-                            }
-                            break;
-                        case 0x12:
-                            for (int i = 1; i < sourceImage.Height - 1; i++)
-                            {
-                                for (int j = 0; j < sourceImage.Width; j++)
-                                {
-                                    if (grayValues[i * sourceImage.Width + j] == 0 ||
-                                        grayValues[(i - 1) * sourceImage.Width + j] == 0 ||
-                                        grayValues[(i + 1) * sourceImage.Width + j] == 0)
-                                    {
-                                        tempArray[i * sourceImage.Width + j] = 0;
-                                    }
-
-                                }
-                            }
-                            break;
-                        case 0x22:
-                            for (int i = 2; i < sourceImage.Height - 2; i++)
-                            {
-                                for (int j = 0; j < sourceImage.Width; j++)
-                                {
-                                    if (grayValues[i * sourceImage.Width + j] == 0 ||
-                                        grayValues[(i - 1) * sourceImage.Width + j] == 0 ||
-                                        grayValues[(i + 1) * sourceImage.Width + j] == 0 ||
-                                        grayValues[(i - 2) * sourceImage.Width + j] == 0 ||
-                                        grayValues[(i + 2) * sourceImage.Width + j] == 0)
-                                    {
-                                        tempArray[i * sourceImage.Width + j] = 0;
-                                    }
-
-                                }
-                            }
-                            break;
-                        case 0x14:
-                            for (int i = 1; i < sourceImage.Height - 1; i++)
-                            {
-                                for (int j = 1; j < sourceImage.Width - 1; j++)
-                                {
-                                    if (grayValues[i * sourceImage.Width + j] == 0 ||
-                                        grayValues[(i - 1) * sourceImage.Width + j] == 0 ||
-                                        grayValues[(i + 1) * sourceImage.Width + j] == 0 ||
-                                        grayValues[i * sourceImage.Width + j + 1] == 0 ||
-                                        grayValues[i * sourceImage.Width + j - 1] == 0)
-                                    {
-                                        tempArray[i * sourceImage.Width + j] = 0;
-                                    }
-
-                                }
-                            }
-                            break;
-                        case 0x24:
-                            for (int i = 2; i < sourceImage.Height - 2; i++)
-                            {
-                                for (int j = 2; j < sourceImage.Width - 2; j++)
-                                {
-                                    if (grayValues[i * sourceImage.Width + j] == 0 ||
-                                        grayValues[(i - 1) * sourceImage.Width + j] == 0 ||
-                                        grayValues[(i + 1) * sourceImage.Width + j] == 0 ||
-                                        grayValues[(i - 2) * sourceImage.Width + j] == 0 ||
-                                        grayValues[(i + 2) * sourceImage.Width + j] == 0 ||
-                                        grayValues[i * sourceImage.Width + j + 1] == 0 ||
-                                        grayValues[i * sourceImage.Width + j - 1] == 0 ||
-                                        grayValues[i * sourceImage.Width + j + 2] == 0 ||
-                                        grayValues[i * sourceImage.Width + j - 2] == 0)
-                                    {
-                                        tempArray[i * sourceImage.Width + j] = 0;
-                                    }
-
-                                }
-                            }
-                            break;
-                        case 0x18:
-                            for (int i = 1; i < sourceImage.Height - 1; i++)
-                            {
-                                for (int j = 1; j < sourceImage.Width - 1; j++)
-                                {
-                                    if (grayValues[i * sourceImage.Width + j] == 0 ||
-                                        grayValues[(i - 1) * sourceImage.Width + j] == 0 ||
-                                        grayValues[(i + 1) * sourceImage.Width + j] == 0 ||
-                                        grayValues[i * sourceImage.Width + j + 1] == 0 ||
-                                        grayValues[i * sourceImage.Width + j - 1] == 0 ||
-                                        grayValues[(i - 1) * sourceImage.Width + j - 1] == 0 ||
-                                        grayValues[(i + 1) * sourceImage.Width + j - 1] == 0 ||
-                                        grayValues[(i - 1) * sourceImage.Width + j + 1] == 0 ||
-                                        grayValues[(i + 1) * sourceImage.Width + j + 1] == 0)
-                                    {
-                                        tempArray[i * sourceImage.Width + j] = 0;
-                                    }
-
-                                }
-                            }
-                            break;
-                        case 0x28:
-                            for (int i = 2; i < sourceImage.Height - 2; i++)
-                            {
-                                for (int j = 2; j < sourceImage.Width - 2; j++)
-                                {
-                                    if (grayValues[(i - 2) * sourceImage.Width + j - 2] == 0 ||
-                                        grayValues[(i - 2) * sourceImage.Width + j - 1] == 0 ||
-                                        grayValues[(i - 2) * sourceImage.Width + j] == 0 ||
-                                        grayValues[(i - 2) * sourceImage.Width + j + 1] == 0 ||
-                                        grayValues[(i - 2) * sourceImage.Width + j + 2] == 0 ||
-                                        grayValues[(i - 1) * sourceImage.Width + j - 2] == 0 ||
-                                        grayValues[(i - 1) * sourceImage.Width + j - 1] == 0 ||
-                                        grayValues[(i - 1) * sourceImage.Width + j] == 0 ||
-                                        grayValues[(i - 1) * sourceImage.Width + j + 1] == 0 ||
-                                        grayValues[(i - 1) * sourceImage.Width + j + 2] == 0 ||
-                                        grayValues[i * sourceImage.Width + j - 2] == 0 ||
-                                        grayValues[i * sourceImage.Width + j - 1] == 0 ||
-                                        grayValues[i * sourceImage.Width + j] == 0 ||
-                                        grayValues[i * sourceImage.Width + j + 1] == 0 ||
-                                        grayValues[i * sourceImage.Width + j + 2] == 0 ||
-                                        grayValues[(i + 2) * sourceImage.Width + j - 2] == 0 ||
-                                        grayValues[(i + 2) * sourceImage.Width + j - 1] == 0 ||
-                                        grayValues[(i + 2) * sourceImage.Width + j] == 0 ||
-                                        grayValues[(i + 2) * sourceImage.Width + j + 1] == 0 ||
-                                        grayValues[(i + 2) * sourceImage.Width + j + 2] == 0 ||
-                                        grayValues[(i + 1) * sourceImage.Width + j - 2] == 0 ||
-                                        grayValues[(i + 1) * sourceImage.Width + j - 1] == 0 ||
-                                        grayValues[(i + 1) * sourceImage.Width + j] == 0 ||
-                                        grayValues[(i + 1) * sourceImage.Width + j + 1] == 0 ||
-                                        grayValues[(i + 1) * sourceImage.Width + j + 2] == 0)
-                                    {
-                                        tempArray[i * sourceImage.Width + j] = 0;
-                                    }
-
-                                }
-                            }
-                            break;
-                        default:
-                            MessageBox.Show("Erro struct element£¡");
-                            break;
-                    }
-
-
-                    grayValues = (byte[])tempArray.Clone();
-
-                    System.Runtime.InteropServices.Marshal.Copy(grayValues, 0, ptr, bytes);
-                    sourceImage.UnlockBits(bmpData);
-                }
-                sourceImage.Dispose();
-                menuItemDilate.Checked = true;
-        }
-
     }
 }
